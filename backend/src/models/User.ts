@@ -1,21 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { IUser } from '../types/user'
 
-export interface IDrawing {
-    drawingId: Schema.Types.ObjectId;
-    date: Date;
-}
-
-export interface IUser extends Document {
-    username: string;
-    name: string;
-    email: string;
-    password: string;
-    emoji: string;
-    admin: boolean;
-    drawings: IDrawing[];
-    createdAt: Date;
-    updatedAt: Date;
-}
+interface IUserDocument extends IUser, Document {}
 
 const UserSchema: Schema = new Schema({
     username: {
@@ -23,7 +9,7 @@ const UserSchema: Schema = new Schema({
         required: true,
         unique: true,
         trim: true,
-        minlength: [4, "Nom d'utilisateur trop court (min 4 caractères)"]
+        minlength: [6, "Nom d'utilisateur trop court (min 4 caractères)"]
     },
     name: {
         type: String,
@@ -68,4 +54,4 @@ const UserSchema: Schema = new Schema({
     timestamps: true
 });
 
-export default mongoose.model<IUser>('User', UserSchema);
+export default mongoose.model<IUserDocument>('User', UserSchema);
