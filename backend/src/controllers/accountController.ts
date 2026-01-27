@@ -1,6 +1,6 @@
 import { Response, Request} from "express";
 import User from "@models/User";
-import { sendSuccessWithData, sendError } from "@utils/apiResponse";
+import { sendSuccessWithData, sendError, sendSuccess } from "@middlewares/apiResponse";
 
 export const connexion = async (
     req: Request,
@@ -24,4 +24,40 @@ export const connexion = async (
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);
     }
+}
+
+export const getUserInfos = async (
+    req: Request,
+    res: Response,
+) : Promise<void> => {
+    try {
+        const user = await User.findById(req.session.user?.id);
+        
+        const userInfo = {
+            username: user?.username,
+            name: user?.name,
+            admin: user?.admin,
+            email: user?.email,
+            emoji:user?.emoji,
+        }
+        sendSuccessWithData(res, 'Users informations', 200, userInfo)
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Erreur inconnue';
+        sendError(res, message, 500);
+    }
+}
+
+export const logout = async (
+    req: Request,
+    res: Response,
+) : Promise<void> => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            sendError(res, 'Erreur server', 500);
+            return;
+        }
+        res.clearCookie('connect.sid');
+        sendSuccess(res, 'User deconnecté', 204);
+    });
 }

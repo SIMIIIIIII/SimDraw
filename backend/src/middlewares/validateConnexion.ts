@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { sendError } from '@utils/apiResponse';
+import { sendError } from '@middlewares/apiResponse';
 import User from '@models/User';
 import bcrypt from 'bcryptjs'
 

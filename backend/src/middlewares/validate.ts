@@ -1,4 +1,4 @@
-import { sendError } from "@utils/apiResponse";
+import { sendError } from "@middlewares/apiResponse";
 import { checkEmail, checkPassword, checkUsername } from "@utils/validator";
 import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose";

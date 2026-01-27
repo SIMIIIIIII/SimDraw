@@ -3,7 +3,7 @@ import { search_helpers } from "@utils/searchHelpers";
 import { ITFforIDF } from "types/search";
 import Drawing from "@models/Drawing";
 import { setCanModify } from "@utils/drawingHelpers";
-import { sendError, sendSuccessWithData } from "@utils/apiResponse";
+import { sendError, sendSuccessWithData } from "@middlewares/apiResponse";
 import { Types } from "mongoose";
 
 export const search = async (

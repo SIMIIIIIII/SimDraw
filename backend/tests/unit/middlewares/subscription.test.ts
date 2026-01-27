@@ -1,12 +1,12 @@
 import { vi, expect, describe, beforeEach, it } from 'vitest'
 import User from '../../../src/models/User'
-import * as apiResponse from '../../../src/utils/apiResponse'
+import * as apiResponse from '../../../src/middlewares/apiResponse'
 import { validateUniqueEmail, validateUniqueUsername } from '../../../src/middlewares/validateUniqueDatas'
 import * as validators from '../../../src/utils/validator'
 import { validateSubscriptionPost } from '../../../src/middlewares/validate'
 
 vi.mock('../../../src/models/User');
-vi.mock('../../../src/utils/apiResponse');
+vi.mock('../../../src/middlewares/apiResponse');
 vi.mock('../../../src/utils/validator');
 
 

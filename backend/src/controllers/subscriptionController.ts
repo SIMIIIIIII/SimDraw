@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { IUser } from "types/user";
 import { hashPassword } from "@utils/helpers";
 import User from "@models/User";
-import { sendSuccessWithData, sendError } from "@utils/apiResponse";
+import { sendSuccessWithData, sendError } from "@middlewares/apiResponse";
 import { EMAIL } from "@config/env";
 
 export const subscription = async (

@@ -1,5 +1,5 @@
-import { connexion } from '@controllers/accountController';
-import { failIfConnected } from '@middlewares/auth';
+import { connexion, getUserInfos, logout } from '@controllers/accountController';
+import { failIfConnected, isAuthenticated } from '@middlewares/auth';
 import { validateConnexionPost } from '@middlewares/validate';
 import { DoesUserExist } from '@middlewares/validateConnexion';
 import express from 'express';
@@ -12,6 +12,17 @@ router.post(
     validateConnexionPost(),
     DoesUserExist(),
     connexion
+)
+
+router.get(
+    '/',
+    isAuthenticated,
+    getUserInfos
+)
+
+router.get(
+    '/logout',
+    logout
 )
 
 export default router;

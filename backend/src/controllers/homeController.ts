@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import Drawing from "@models/Drawing";
 import { setCanModify, sortByUpdatedAt } from "@utils/drawingHelpers";
-import { sendSuccessWithData, sendError } from "@utils/apiResponse";
+import { sendSuccessWithData, sendError } from "@middlewares/apiResponse";
 
 export const home = async (
     req: Request,

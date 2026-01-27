@@ -1,4 +1,4 @@
-import { sendError } from '@utils/apiResponse';
+import { sendError } from '@middlewares/apiResponse';
 import { Request, Response, NextFunction } from 'express';
 
 export const isAuthenticated = (
