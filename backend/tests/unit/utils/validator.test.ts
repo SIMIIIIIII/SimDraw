@@ -1,6 +1,6 @@
 // tests/unit/validator.test.ts
 import { describe, it, expect } from 'vitest';
-import { checkEmail, checkPassword, checkUsername } from '../../src/middlewares/validator';
+import { checkEmail, checkPassword, checkUsername } from '../../../src/utils/validator';
 
 describe('Validator - checkEmail', () => {
   it('devrait accepter un email valide', () => {

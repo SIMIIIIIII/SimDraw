@@ -1,5 +1,7 @@
+import { Types } from 'mongoose'
+
 export interface IAuthor {
-    authorId: string,
+    authorId: Types.ObjectId,
     username: string,
-    emoji: string
+    emoji?: string
 }

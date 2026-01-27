@@ -26,7 +26,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 }
@@ -36,7 +36,7 @@ describe("Drawings models", () => {
             expect(drawing.title).toBe("Test 1");
             expect(drawing.theme).toBe("Test");
             expect(drawing.maxParticipants).toBe(1);
-            expect(drawing.author.authorId.toString()).toBe(user?._id.toString());
+            expect(drawing.author.authorId).toStrictEqual(user?._id);
             expect(drawing.author.username).toBe(user?.username)
             expect(drawing.author.emoji).toBe(user?.emoji)
 
@@ -68,7 +68,7 @@ describe("Drawings models", () => {
                 theme: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: `  ${user?.username}  `,
                     emoji: user?.emoji
                 }
@@ -87,7 +87,7 @@ describe("Drawings models", () => {
                 theme: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: `  ${user?.username}  `,
                 }
             });
@@ -109,7 +109,7 @@ describe("Drawings models", () => {
                 theme: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: `  ${user?.username}  `,
                     emoji: user?.emoji
                 }
@@ -126,7 +126,7 @@ describe("Drawings models", () => {
                 title: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: `  ${user?.username}  `,
                     emoji: user?.emoji
                 }
@@ -144,7 +144,7 @@ describe("Drawings models", () => {
                 theme: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     emoji: user?.emoji
                 }
             }
@@ -196,7 +196,7 @@ describe("Drawings models", () => {
                 theme: "Test",
                 maxParticipants: 3,
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: "sim",
                     emoji: user?.emoji
                 }
@@ -220,7 +220,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -239,7 +239,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -258,7 +258,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -266,7 +266,7 @@ describe("Drawings models", () => {
                 whoLiked: ["ici", "alors"],
                 isDone: true,
                 isPublic: true,
-                currentTurn: user?._id.toString(),
+                currentTurn: user?._id,
             });
 
             expect(drawing.likes).toBe(3);
@@ -274,7 +274,7 @@ describe("Drawings models", () => {
             expect(drawing.whoLiked[0]).toBe('ici');
             expect(drawing.isDone).toBeTruthy();
             expect(drawing.isPublic).toBeTruthy();
-            expect(drawing.currentTurn).toBe(user?._id.toString());
+            expect(drawing.currentTurn).toBe(user?._id);
 
         })
 
@@ -283,13 +283,13 @@ describe("Drawings models", () => {
             expect(user, "Un erreur de l'utilisateur").toBeDefined();
 
             const participants1 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
                 end: 10
             }
 
             const participants2 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
                 end: 16
             }
@@ -299,7 +299,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -313,7 +313,7 @@ describe("Drawings models", () => {
             expect(drawing.participants[1].joinedAt).toBeDefined();
             expect(drawing.participants[1].start).toBe(5);
             expect(drawing.participants[0].end).toBe(10);
-            expect(drawing.participants[1].userId).toBe(user?._id.toString());
+            expect(drawing.participants[1].userId).toStrictEqual(user?._id);
             
 
         })
@@ -323,7 +323,7 @@ describe("Drawings models", () => {
             expect(user, "Un erreur de l'utilisateur").toBeDefined();
 
             const participants1 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
                 end: 10
             }
@@ -338,7 +338,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -355,13 +355,13 @@ describe("Drawings models", () => {
             expect(user, "Un erreur de l'utilisateur").toBeDefined();
 
             const participants1 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
                 end: 10
             }
 
             const participants2 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 end: 16
             }
             
@@ -370,7 +370,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -387,12 +387,12 @@ describe("Drawings models", () => {
             expect(user, "Un erreur de l'utilisateur").toBeDefined();
 
             const participants1 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
             }
 
             const participants2 = {
-                userId: user?._id.toString(),
+                userId: user?._id,
                 start: 5,
                 end: 16
             }
@@ -402,7 +402,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -424,14 +424,14 @@ describe("Drawings models", () => {
                     x: 5,
                     y: 9
                 }],
-                userId: user?._id.toString(),
+                userId: user?._id,
             }
 
             const drawing = await Drawing.create({
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -447,7 +447,7 @@ describe("Drawings models", () => {
             expect(drawing.path[0].color).toBe('#000000');
             expect(drawing.path[0].size).toBe(1);
             expect(drawing.path[0].timestamp).toBeDefined();
-            expect(drawing.path[0].userId).toBe(user?._id.toString());
+            expect(drawing.path[0].userId).toStrictEqual(user?._id);
         })
 
         it("Devrait echouer avec path sans x ", async () => {
@@ -459,14 +459,14 @@ describe("Drawings models", () => {
                 points: [{
                     y: 9
                 }],
-                userId: user?._id.toString(),
+                userId: user?._id,
             }
 
             const drawing = {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -485,14 +485,14 @@ describe("Drawings models", () => {
                 points: [{
                     x: 5,
                 }],
-                userId: user?._id.toString(),
+                userId: user?._id,
             }
 
             const drawing = {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -508,14 +508,14 @@ describe("Drawings models", () => {
 
             
             const path = {
-                userId: user?._id.toString(),
+                userId: user?._id,
             }
 
             const drawing = {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },
@@ -541,7 +541,7 @@ describe("Drawings models", () => {
                 title: "Test 1",
                 theme: "Test",
                 author: {
-                    authorId: user?._id.toString(),
+                    authorId: user?._id,
                     username: user?.username,
                     emoji: user?.emoji
                 },

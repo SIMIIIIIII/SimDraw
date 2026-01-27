@@ -1,8 +1,9 @@
 import { IAuthor } from './author'
-import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
+import { ApiResponseWithData } from './api';
 
 interface IParticipant {
-    userId: string;
+    userId: Types.ObjectId;
     joinedAt?: Date;     
     isActive?: boolean;  
     start: number;       
@@ -16,25 +17,30 @@ interface IPoints {
 
 interface IPath {
     points: IPoints[],
-    userId: string,
+    userId: Types.ObjectId,
     color: string,
     size: number,
     timestamp: number
 }
 
 export interface IDrawing {
+    _id: Types.ObjectId,
     title: string,
     theme: string,
     description?: string,
     participants: IParticipant[],
     maxParticipants?: number,
     path: IPath[],
-    currentTurn?: string,
+    currentTurn?: Types.ObjectId,
     createdAt: Date,
     updatedAt: Date,
     author: IAuthor,
-    likes?: number,
-    whoLiked: string[],
+    likes: number,
+    whoLiked: Types.ObjectId[],
     isDone: boolean,
     isPublic: boolean
+    canModify?: boolean
 }
+
+export type DrawingResponse = ApiResponseWithData<IDrawing>;
+export type DrawingsListResponse = ApiResponseWithData<IDrawing[]>

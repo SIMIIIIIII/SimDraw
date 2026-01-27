@@ -1,5 +1,8 @@
+import { Types } from 'mongoose'
+
+
 interface IDrawing {
-    drawingId: string;
+    drawingId: Types.ObjectId;
     date: Date;
 }
 
@@ -8,9 +11,9 @@ export interface IUser {
     name: string;
     email: string;
     password: string;
-    emoji: string;
-    admin: boolean;
-    drawings: IDrawing[];
-    createdAt: Date;
-    updatedAt: Date;
+    emoji?: string;
+    admin?: boolean;
+    drawings?: IDrawing[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }

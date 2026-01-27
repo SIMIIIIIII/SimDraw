@@ -1,0 +1,37 @@
+import { sendError } from '@utils/apiResponse';
+import { Request, Response, NextFunction } from 'express';
+
+export const isAuthenticated = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.session?.user) {
+    sendError(res, 'Veillez vous connecter', 401);
+    return;
+  }
+  next();
+};
+
+export const failIfConnected = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (req.session.user){
+    sendError(res, 'Please logout', 430);
+    return
+  }
+  next();
+}
+
+
+export const checkAuth = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void => {
+  req.isAuthenticated = !!req.session?.user;
+  req.currentUser = req.session?.user! ?? null;
+  next();
+};

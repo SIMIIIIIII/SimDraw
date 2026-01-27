@@ -5,7 +5,10 @@ export const checkEmail = (email: string): boolean => {
 };
 
 export const checkUsername = (username: string): boolean => {
-    return validator.isLength(username, { min: 6 });
+    return (
+        !username.trim().includes(' ') &&
+        validator.isLength(username.trim(), { min: 6 })
+    );
 };
 
 export const checkPassword = (password: string): boolean => {

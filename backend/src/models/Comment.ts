@@ -1,53 +1,46 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { IDrawing } from 'types/drawing';
+import mongoose, { Schema, Document, Types } from 'mongoose';
+import { IComment } from '../types/comment';
 
 const CommentSchema : Schema = new Schema({
     comment: {
         type: String,
-        require: true,
+        required: true,
         trim:true
     },
 
     postId: {
-        type: String,
-        require: true,
-        trim: true
+        type: Types.ObjectId,
+        required: true,
     },
 
     author: {
         type: {
             authorId: {
-                type: String,
-                require: true,
+                type: Types.ObjectId,
+                required: true,
             },
 
             username: {
                 type: String,
-                require: true,
+                required: true,
+                minlength: 6,
+                trim: true
             },
 
             emoji: {
                 type: String,
                 default: '1f600',
+                trim: true
             },
         },
 
-        require: true,
+        required: true,
     },
+}, {
+    timestamps: true
+}
+)
 
-    createdAtd: {
-        type: Date,
-        default: Date.now(),
-        require: true,
-    },
-
-    updatedAtd: {
-        type: Date,
-        default: Date.now(),
-        require: true,
-    },
-})
-
-interface ICommentDocument extends IDrawing, Document {}
+interface ICommentDocument extends IComment, Document {}
 
 export default mongoose.model<ICommentDocument>("Comment", CommentSchema);

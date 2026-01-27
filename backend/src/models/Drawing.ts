@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, Types } from 'mongoose'
 import { IDrawing } from '../types/drawing'
 
 
@@ -25,7 +25,7 @@ const DrawingSchema : Schema = new Schema ({
     participants: {
         type: [{
             userId: {
-                type: String,
+                type: Types.ObjectId,
                 required: true
             },
             joinedAt: {
@@ -78,7 +78,7 @@ const DrawingSchema : Schema = new Schema ({
                 }
             },
             userId: {
-                type: String,
+                type: Types.ObjectId,
                 required: true
             },
             color: {
@@ -101,7 +101,7 @@ const DrawingSchema : Schema = new Schema ({
     },
 
     currentTurn: {
-        type: String,
+        type: Types.ObjectId,
         default: null,
         required: false,
     },
@@ -109,7 +109,7 @@ const DrawingSchema : Schema = new Schema ({
     author: {
         type: {
             authorId: {
-                type: Schema.Types.ObjectId,
+                type: Types.ObjectId,
                 required: true,
             },
 
