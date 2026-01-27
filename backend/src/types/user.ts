@@ -7,6 +7,7 @@ interface IDrawing {
 }
 
 export interface IUser {
+    _id?: Types.ObjectId
     username: string;
     name: string;
     email: string;

@@ -16,7 +16,7 @@ app.use(session(sessionConfig));
 // Routes
 app.use('/', HomeRoutes);
 app.use('/subscription', SubscriptionRoute);
-app.use('/accont', Account), 
+app.use('/account', Account), 
 
 // Route 404 (doit être APRÈS les routes)
 app.use((req: Request, res: Response) => { 

@@ -1,9 +1,21 @@
+process.env.NOV_ENV = 'test';
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import request from 'supertest'
 import app from '../../src/app';
 import Drawing from '../../src/models/Drawing';
 import { createMockDrawing } from '../factories/drawingFactory';
 import { search_helpers } from '../../src/utils/searchHelpers'; 
+import { IUser } from '../../src/types/user';
+import TestAgent from 'supertest/lib/agent';
+import * as validators from '../../src/utils/validator'
+import bcrypt from 'bcryptjs'
+import User from '../../src/models/User';
+import { Types } from 'mongoose';
+
+vi.mock('../../src/models/User');
+vi.mock('../../src/utils/validator');
+vi.mock('bcrypt');
 
 vi.mock('../../src/models/Drawing');
 vi.mock('../../src/models/Comment');
@@ -15,6 +27,26 @@ vi.mock('../../src/utils/searchHelpers', () => ({
         getSearchMessage: vi.fn()
     },
 }));
+
+const user : IUser = {
+    _id: new Types.ObjectId,
+    username: 'simiii',
+    name: "SIM",
+    password: "#TheSim25",
+    email: 'thesim@sim.dev',
+    emoji: '1f600',
+    admin: true
+}
+
+const connexion = async(agent : TestAgent) => {          
+    vi.mocked(validators.checkPassword).mockReturnValue(true);
+    vi.mocked(validators.checkUsername).mockReturnValue(true);
+    vi.mocked(User.findOne).mockResolvedValue(user as any);
+    vi.spyOn(bcrypt, 'compare').mockImplementation((p, h) => {return true});
+                
+    await agent.post('/account/login').send(user);        
+    
+}
 
 describe('Home Page', () => {
     beforeEach(() => {
@@ -139,6 +171,22 @@ describe('Home Page', () => {
             const res = await request(app).get('/my_drawings');
             expect(res.body.success).toBeFalsy()
             expect(res.status).toBe(401)
+        })
+
+        it('Connecter donc ne devrait pas echouer', async () => {
+            const agent = request.agent(app);
+            await connexion(agent);
+
+            const mockDrawings = [
+                createMockDrawing({title: 'Dessin 1'}),
+                createMockDrawing({title: 'Dessin 2'})
+            ];
+
+            vi.mocked(Drawing.find).mockResolvedValue(mockDrawings as any);
+
+            const res = await agent.get('/my_drawings');
+            expect(res.body.success).toBeTruthy()
+
         })
     })
 })

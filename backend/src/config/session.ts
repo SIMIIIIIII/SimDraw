@@ -2,6 +2,18 @@ import MongoStore from 'connect-mongo';
 import { SESSION_SECRET, NOV_ENV, MONGODB_URI } from './env';
 
 export const sessionConfig = {
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        path: '/', 
+        httpOnly: true, 
+        maxAge: 3600000
+    }
+}
+
+/*
+{
     secret: SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
@@ -15,4 +27,4 @@ export const sessionConfig = {
         secure: NOV_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000 // 1 jour
     }
-};
+};*/
