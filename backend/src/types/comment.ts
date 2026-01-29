@@ -7,5 +7,6 @@ export interface IComment {
     postId: Types.ObjectId,
     author: IAuthor,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    hasPosted?: Boolean
 }

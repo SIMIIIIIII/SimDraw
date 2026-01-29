@@ -1,4 +1,3 @@
-// tests/unit/validator.test.ts
 import { describe, it, expect } from 'vitest';
 import { checkEmail, checkPassword, checkUsername } from '../../../src/utils/validator';
 

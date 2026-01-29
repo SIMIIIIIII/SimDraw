@@ -11,3 +11,16 @@ export const createMockUser = (overrides = {}) : IUser => {
         ...overrides
     }
 }
+
+export const createUser = (overrides = {}) : IUser => {
+    return {
+        _id: new Types.ObjectId,
+        username: 'simiii',
+        name: "SIM",
+        password: "#TheSim25",
+        email: 'thesim@sim.dev',
+        emoji: '1f600',
+        admin: true,
+        ...overrides
+    }  
+}

@@ -33,4 +33,25 @@ describe('Subscrition Route', () => {
         expect(res.body.data.email).toBeUndefined();
         
     })
+
+    it('erreur server', async () => {
+        const user : IUser = {
+            username: 'simiii',
+            name: "SIM",
+            password: "#TheSim25",
+            email: 'thesim@sim.dev'
+        }
+
+        vi.mocked(validators.checkEmail).mockReturnValue(true);
+        vi.mocked(validators.checkPassword).mockReturnValue(true);
+        vi.mocked(validators.checkUsername).mockReturnValue(true);
+        vi.mocked(User.create).mockRejectedValue(new Error(' '));
+
+        const res = await request(app).post('/subscription').send(user);
+
+        expect(res.body.success).toBeFalsy();
+        expect(res.status).toBe(500);
+        
+        
+    })
 })

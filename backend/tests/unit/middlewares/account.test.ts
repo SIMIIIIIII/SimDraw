@@ -1,15 +1,18 @@
 import { vi, expect, describe, beforeEach, it, afterEach } from 'vitest'
 import User from '../../../src/models/User'
-import * as apiResponse from '../../../src/utils/apiResponse'
+import * as apiResponse from '../../../src/middlewares/apiResponse'
 import { DoesUserExist } from '../../../src/middlewares/validateConnexion'
 import * as validators from '../../../src/utils/validator'
-import { validateConnexionPost } from '../../../src/middlewares/validate'
+import { validateAdminPost, validateConnexionPost } from '../../../src/middlewares/validate'
 import bcrypt from 'bcryptjs'
+import { Types } from 'mongoose'
+import Drawing from '../../../src/models/Drawing'
 
 vi.mock('../../../src/models/User');
-vi.mock('../../../src/utils/apiResponse');
+vi.mock('../../../src/middlewares/apiResponse');
 vi.mock('../../../src/utils/validator');
 vi.mock('bcrypt');
+vi.mock('../../../src/models/Drawing');
 
 
 describe('Account Route', () => {
@@ -130,6 +133,76 @@ describe('Account Route', () => {
             
             expect(apiResponse.sendError).not.toHaveBeenCalled();
             expect(next).toHaveBeenCalled();
+        })
+    })
+
+    describe('validateAdminPost middlewares', () => {
+        let req: any;
+        let res: any;
+        let next: any;
+
+        beforeEach(() => {
+            res = {};
+            next = vi.fn();
+            vi.clearAllMocks();
+        })
+
+        it('devrait echouer si champ choix n\'existe pas', async() => {
+            req = {body: {drawingId: new Types.ObjectId}}
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalledOnce();
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Invalid choice', 400);
+            expect(next).not.toHaveBeenCalled()
+        })
+
+        it('Devrait echouer si mauvais choix', async() => {
+            req = {body: {drawingId: new Types.ObjectId, choice: 'sim'}};
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalledOnce();
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Invalid choice', 400);
+            expect(next).not.toHaveBeenCalled()
+        })
+
+        it('Devrait echouer si champs drawingId manque', async() => {
+            req = {body: { choice: 'accepter'}};
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalledOnce();
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Missed drawingId', 400);
+            expect(next).not.toHaveBeenCalled()
+        })
+
+        it('Devrait echouer si le drawing avec cet id n\'exists pas', async() => {
+            req = {body: {drawingId: new Types.ObjectId, choice: 'refuser'}};
+
+            vi.mocked(Drawing.findById).mockResolvedValue(null as any)
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalledOnce();
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Drawing not found', 404);
+            expect(next).not.toHaveBeenCalled()
+        })
+
+        it('Devrait reussir avec accepter comme choix', async() => {
+            req = {body: {drawingId: new Types.ObjectId, choice: 'accepter'}};
+
+            vi.mocked(Drawing.findById).mockResolvedValue({} as any)
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).not.toHaveBeenCalled();
+            expect(next).toHaveBeenCalled()
+        })
+
+        it('Devrait reussir avec refuser comme choix', async() => {
+            req = {body: {drawingId: new Types.ObjectId, choice: 'refuser'}};
+
+            vi.mocked(Drawing.findById).mockResolvedValue({} as any)
+            await validateAdminPost()(req, res, next);
+
+            expect(apiResponse.sendError).not.toHaveBeenCalled();
+            expect(next).toHaveBeenCalled()
         })
     })
 })

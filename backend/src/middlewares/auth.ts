@@ -13,6 +13,18 @@ export const isAuthenticated = (
   next();
 };
 
+export const isAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.session?.user?.admin) {
+    sendError(res, 'Vous n\êtes pas administrateur', 403);
+    return;
+  }
+  next();
+};
+
 export const failIfConnected = (
   req: Request,
   res: Response,

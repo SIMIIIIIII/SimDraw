@@ -53,7 +53,6 @@ export const logout = async (
 ) : Promise<void> => {
     req.session.destroy((err) => {
         if (err) {
-            console.error('Error destroying session:', err);
             sendError(res, 'Erreur server', 500);
             return;
         }

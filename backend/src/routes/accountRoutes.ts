@@ -1,6 +1,7 @@
 import { connexion, getUserInfos, logout } from '@controllers/accountController';
-import { failIfConnected, isAuthenticated } from '@middlewares/auth';
-import { validateConnexionPost } from '@middlewares/validate';
+import { accepteDrawing, admin, refuseDrawing } from '@controllers/adminController';
+import { failIfConnected, isAdmin, isAuthenticated } from '@middlewares/auth';
+import { validateAdminPost, validateConnexionPost } from '@middlewares/validate';
 import { DoesUserExist } from '@middlewares/validateConnexion';
 import express from 'express';
 
@@ -25,4 +26,26 @@ router.get(
     logout
 )
 
+router.get(
+    '/admin',
+    isAuthenticated,
+    isAdmin,
+    admin
+)
+
+router.put(
+    '/admin',
+    isAuthenticated,
+    isAdmin,
+    validateAdminPost(),
+    accepteDrawing
+)
+
+router.delete(
+    '/admin',
+    isAuthenticated,
+    isAdmin,
+    validateAdminPost(),
+    refuseDrawing
+)
 export default router;

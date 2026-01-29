@@ -36,6 +36,11 @@ const CommentSchema : Schema = new Schema({
 
         required: true,
     },
+
+    hasPosted: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 }

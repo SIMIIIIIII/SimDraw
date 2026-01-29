@@ -149,6 +149,23 @@ const DrawingSchema : Schema = new Schema ({
         type: Boolean,
         default: false,
     },
+
+    formattedParticipants: {
+        type: {
+            userId: {
+                type: Types.ObjectId,
+                required: true
+            },
+
+            username: {
+                type: String,
+                required: true,
+                minlength: [6, "Nom d'utilisateur trop court (min 4 caractères)"],
+                trim: true
+            }
+        },
+        required: false
+    }
 }, {
     timestamps: true
 })

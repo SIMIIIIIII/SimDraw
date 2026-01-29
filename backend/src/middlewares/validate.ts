@@ -1,4 +1,5 @@
 import { sendError } from "@middlewares/apiResponse";
+import Drawing from "@models/Drawing";
 import { checkEmail, checkPassword, checkUsername } from "@utils/validator";
 import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose";
@@ -88,6 +89,34 @@ export const validateConnexionPost = () => {
         if (!password || password.trim().length === 0 || !checkPassword(password)) {
             sendError(res, 'Invalid password format', 400);
             return
+        }
+
+        next();
+    }
+}
+
+export const validateAdminPost = () => {
+    return async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : Promise<void> => {
+        const choice : string = req.body.choice;
+        const drawingId: string = req.body.drawingId;
+
+        if (!choice || (!choice.includes('refuser') && !choice.includes('accepter'))){
+            sendError(res, 'Invalid choice', 400);
+            return;
+        }
+
+        if (!drawingId){
+            sendError(res, 'Missed drawingId', 400);
+            return;
+        }
+
+        if (! await Drawing.findById(drawingId)){
+            sendError(res, 'Drawing not found', 404);
+            return;
         }
 
         next();

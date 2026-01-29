@@ -1,9 +1,13 @@
 import express, { Application, Request, Response } from 'express';
 import session from 'express-session';
 import { sessionConfig } from '@config/session';
+
 import HomeRoutes from './routes/homeRoutes';
 import SubscriptionRoute from './routes/subscriptionRoutes'
 import Account from './routes/accountRoutes'
+import Comment from './routes/commentRoutes'
+import Drawing from './routes/drawingRoutes';
+import Draw from './routes/drawRoutes'
  
 const app: Application = express(); 
  
@@ -16,7 +20,10 @@ app.use(session(sessionConfig));
 // Routes
 app.use('/', HomeRoutes);
 app.use('/subscription', SubscriptionRoute);
-app.use('/account', Account), 
+app.use('/account', Account);
+app.use('/comment', Comment);
+app.use('/drawing', Drawing);
+app.use('/draw', Draw);
 
 // Route 404 (doit être APRÈS les routes)
 app.use((req: Request, res: Response) => { 

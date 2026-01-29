@@ -76,9 +76,39 @@ describe('Home Page', () => {
             expect(res.body.data.canModify).toBeUndefined;
 
         })
+
+        it('erreur server', async () => {
+            const mockDrawings = [
+                createMockDrawing({title: 'Dessin 1'}),
+                createMockDrawing({title: 'Dessin 2'})
+            ];
+
+            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            
+            const res = await request(app).get('/');
+            
+            expect(res.body.success).toBeFalsy();
+            expect(res.status).toBe(500);
+            
+
+        })
     })
 
     describe("GET '/by/author/:id' ", () => {
+        it('erreur server', async () => {
+            const mockDrawings = [
+                createMockDrawing({title: 'Dessin 1'}),
+                createMockDrawing({title: 'Dessin 2'})
+            ];
+
+            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            
+            const res = await request(app).get(`/by/author/${mockDrawings[0].author.authorId}`);
+            
+            expect(res.body.success).toBeFalsy();
+            expect(res.status).toBe(500);
+
+        })
         it('devrait retourner la liste des dessins', async () => {
             const mockDrawings = [
                 createMockDrawing({title: 'Dessin 1'}),
@@ -129,6 +159,21 @@ describe('Home Page', () => {
             expect(res.body.data.canModify).toBeUndefined;
 
         })
+
+        it('erreur server', async () => {
+            const mockDrawings = [
+                createMockDrawing({title: 'Dessin 1'}),
+                createMockDrawing({title: 'Dessin 2'})
+            ];
+
+            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            
+            const res = await request(app).get(`/by/theme/${mockDrawings[0].theme}`);
+
+            expect(res.body.success).toBeFalsy();
+            expect(res.status).toBe(500);
+
+        })
     })
 
     describe("POST '/research", () => {
@@ -159,6 +204,31 @@ describe('Home Page', () => {
             expect(res.body.data).toBeDefined();
         })
 
+        it("erreur server", async () => {
+            const mockDrawings = [
+                createMockDrawing({
+                    title: 'Dessin 1',
+                    theme: 'Theme 1',
+                    description: "Sim est un informaticien respecté"
+                }),
+                createMockDrawing({
+                    title: 'Dessin 2',
+                    theme: 'Theme 2',
+                    description: 'Lama est un magicien aimé'
+                })
+            ];
+            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            vi.mocked(search_helpers.filter).mockReturnValue([]);
+            vi.mocked(search_helpers.research).mockResolvedValue([]);
+            vi.mocked(search_helpers.getTFWithWords).mockReturnValue([]);
+            vi.mocked(search_helpers.getSearchMessage).mockReturnValue("Sim est là");
+            
+            const res = await request(app).post('/research').send({"searchTerm": "Sim"});
+
+            expect(res.body.success).toBeFalsy();
+            expect(res.status).toBe(500);
+        })
+
         it("Rechercher invalide", async () => {
             const res = await request(app).post('/research').send({"searchTer": "Sim"});
 
@@ -186,6 +256,24 @@ describe('Home Page', () => {
 
             const res = await agent.get('/my_drawings');
             expect(res.body.success).toBeTruthy()
+
+        })
+
+        it('Connecter donc ne devrait pas echouer', async () => {
+            const agent = request.agent(app);
+            await connexion(agent);
+
+            const mockDrawings = [
+                createMockDrawing({title: 'Dessin 1'}),
+                createMockDrawing({title: 'Dessin 2'})
+            ];
+
+            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '))
+
+            const res = await agent.get('/my_drawings');
+
+            expect(res.body.success).toBeFalsy();
+            expect(res.status).toBe(500);
 
         })
     })
