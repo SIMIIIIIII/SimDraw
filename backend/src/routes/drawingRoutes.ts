@@ -1,6 +1,6 @@
-import { createDrawing, deleteDrawing, getDrawing, likeDrawing, modifyDrawing } from '@controllers/drawingController';
-import { checkAuth, isAuthenticated } from '@middlewares/auth';
-import { drawingBelongTo, validateDrawingId, validateDrawingPost } from '@middlewares/validateDrawing';
+import { createDrawing, deleteDrawing, getDrawing, likeDrawing, modifyDrawing } from '../controllers/drawingController';
+import { checkAuth, isAuthenticated } from '../middlewares/auth';
+import { drawingBelongTo, validateDrawingId, validateDrawingPost } from '../middlewares/validateDrawing';
 import express from 'express'
 
 const router = express.Router()

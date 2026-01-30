@@ -1,5 +1,5 @@
-import MongoStore from 'connect-mongo';
-import { SESSION_SECRET, NOV_ENV, MONGODB_URI } from './env';
+
+import { SESSION_SECRET} from './env';
 
 export const sessionConfig = {
     secret: SESSION_SECRET,

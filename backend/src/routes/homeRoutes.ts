@@ -1,7 +1,7 @@
-import * as homeController from "@controllers/homeController";
-import { search } from "@controllers/searchController";
-import { checkAuth, isAuthenticated } from "@middlewares/auth";
-import { validateObjectId, validateSearchPost } from "@middlewares/validate";
+import * as homeController from "../controllers/homeController";
+import { search } from "../controllers/searchController";
+import { checkAuth, isAuthenticated } from "../middlewares/auth";
+import { validateObjectId, validateSearchPost } from "../middlewares/validate";
 import express  from "express";
 const router = express.Router()
 

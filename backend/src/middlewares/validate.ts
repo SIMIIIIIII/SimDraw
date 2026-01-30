@@ -1,6 +1,6 @@
-import { sendError } from "@middlewares/apiResponse";
-import Drawing from "@models/Drawing";
-import { checkEmail, checkPassword, checkUsername } from "@utils/validator";
+import { sendError } from "../middlewares/apiResponse";
+import Drawing from "../models/Drawing";
+import { checkEmail, checkPassword, checkUsername } from "../utils/validator";
 import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose";
 

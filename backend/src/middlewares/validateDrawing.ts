@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { sendError } from "./apiResponse";
 import { Types } from "mongoose";
-import Drawing from "@models/Drawing";
+import Drawing from "../models/Drawing";
+import { SessionData } from "../types/sessionTypes";
 
 export const validateDrawingPost = () => {
     return async (
@@ -74,7 +75,7 @@ export const drawingBelongTo = () => {
                 return
             }
             
-            if (!drawing?.author.authorId.equals(req.session.user?.id) && !req.session.user!.admin){
+            if (!drawing?.author.authorId.equals((req.session as SessionData).user?.id) && !(req.session as SessionData).user!.admin){
                 sendError(res, 'Not allowed', 403);
                 return;
             }

@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import { sendError } from "./apiResponse";
-import Drawing from "@models/Drawing";
+import Drawing from "../models/Drawing";
 import { Types } from "mongoose";
-import Comment from "@models/Comment";
+import Comment from "../models/Comment";
+import { SessionData } from "../types/sessionTypes";
 
 export const validateCommentPost = () => {
     return async (
@@ -70,7 +71,7 @@ export const validateCommentId = () => {
                 return
             }
 
-            if (!comment.author.authorId.equals(req.session.user?.id)){
+            if (!comment.author.authorId.equals((req.session as SessionData).user?.id)){
                 sendError(res, 'Not allowed', 403);
                 return;
             }

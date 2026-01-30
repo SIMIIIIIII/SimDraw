@@ -1,7 +1,8 @@
 import { Response, Request } from "express";
-import Drawing from "@models/Drawing";
-import { setCanModify, sortByUpdatedAt } from "@utils/drawingHelpers";
-import { sendSuccessWithData, sendError } from "@middlewares/apiResponse";
+import Drawing from "../models/Drawing";
+import { setCanModify, sortByUpdatedAt } from "../utils/drawingHelpers";
+import { sendSuccessWithData, sendError } from "../middlewares/apiResponse";
+import { SessionData, Req } from '../types/sessionTypes'
 
 export const home = async (
     req: Request,
@@ -10,8 +11,8 @@ export const home = async (
     try {
         const drawings = await Drawing.find({ isDone: true, isPublic: true });
         sortByUpdatedAt(drawings);
-
-        if (req.isAuthenticated) setCanModify(drawings, req.session.user?.id);
+        
+        if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
         sendSuccessWithData(res, 'Succes !!!', 200, drawings);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -34,7 +35,7 @@ export const byAuthor = async (
         }) 
         sortByUpdatedAt(drawings);
 
-        if (req.isAuthenticated) setCanModify(drawings, req.session.user?.id);
+        if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
         sendSuccessWithData(res, 'Succes !!!', 200, drawings);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -56,7 +57,7 @@ export const byTheme = async (
         }) 
         sortByUpdatedAt(drawings);
 
-        if (req.isAuthenticated) setCanModify(drawings, req.session.user?.id);
+        if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
         sendSuccessWithData(res, 'Succes !!!', 200, drawings);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -71,7 +72,7 @@ export const my_drawings = async (
     try {
         const drawings = await Drawing.find({
             author: {
-                authorId: req.session.user?.id
+                authorId: (req.session as SessionData).user?.id
             }
         });
 

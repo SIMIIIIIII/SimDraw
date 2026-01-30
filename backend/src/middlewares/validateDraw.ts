@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express"
 import { sendError } from "./apiResponse";
 import { Types } from "mongoose";
-import Drawing from "@models/Drawing";
+import Drawing from "../models/Drawing";
 import { setTimer } from "./timer";
-import { hasParticipated } from "@utils/helpers";
+import { hasParticipated } from "../utils/helpers";
 import { isValidPath } from "../types/drawing";
+import { SessionData } from "../types/sessionTypes";
 
 export const isPartyOn = () => {
     return async (
@@ -48,7 +49,7 @@ export const isCurrentTurn = () => {
         const drawingId : string = (typeof req.params.id === 'string' ? req.params.id : ' ')
         const drawing = await Drawing.findById(drawingId);
 
-        if (drawing?.currentTurn && drawing?.currentTurn !== req.session.user?.id) {
+        if (drawing?.currentTurn && drawing?.currentTurn !== (req.session as SessionData).user?.id) {
             setTimer(drawingId);
             sendError(res, 'Someone else is drawing', 403);
             return;

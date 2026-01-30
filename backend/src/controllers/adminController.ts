@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
-import Drawing from '@models/Drawing';
-import { sendSuccessWithData, sendError, sendSuccess } from '@middlewares/apiResponse';
+import Drawing from '../models/Drawing';
+import { sendSuccessWithData, sendError, sendSuccess } from '../middlewares/apiResponse';
 
 export const admin = async (
     _req: Request,
@@ -25,7 +25,6 @@ export const accepteDrawing = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const choice = req.body.choice;
         const drawingId = req.body.drawingId;
 
         await Drawing.findByIdAndUpdate(drawingId, {isPublic: true})
@@ -42,7 +41,6 @@ export const refuseDrawing = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const choice = req.body.choice;
         const drawingId = req.body.drawingId;
 
         await Drawing.findByIdAndDelete(drawingId);

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { IUser } from "types/user";
-import { hashPassword } from "@utils/helpers";
-import User from "@models/User";
-import { sendSuccessWithData, sendError } from "@middlewares/apiResponse";
-import { EMAIL } from "@config/env";
+import { hashPassword } from "../utils/helpers";
+import User from "../models/User";
+import { sendSuccessWithData, sendError } from "../middlewares/apiResponse";
+import { EMAIL } from "../config/env";
+import { SessionData } from "../types/sessionTypes";
 
 export const subscription = async (
     req: Request,
@@ -21,14 +22,14 @@ export const subscription = async (
 
         const newUser = await User.create(user);
 
-        req.session.user = {
+        (req.session as SessionData).user = {
             id: newUser._id,
             username: newUser.username,
             emoji: newUser.emoji!,
             admin: newUser.admin!,
         };
 
-        sendSuccessWithData(res, 'User succesfully created', 201, req.session.user)
+        sendSuccessWithData(res, 'User succesfully created', 201, (req.session as SessionData).user)
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);

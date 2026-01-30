@@ -1,6 +1,6 @@
 import app from './app'; 
 import { PORT } from './config/env'
-import { db } from '@config/db';
+import { db } from './config/db';
 
 db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('connected to Database'));

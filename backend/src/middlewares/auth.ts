@@ -1,12 +1,13 @@
-import { sendError } from '@middlewares/apiResponse';
+import { sendError } from '../middlewares/apiResponse';
 import { Request, Response, NextFunction } from 'express';
+import {SessionData, Req} from '../types/sessionTypes'
 
 export const isAuthenticated = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  if (!req.session?.user) {
+  if (!(req.session as SessionData).user) {
     sendError(res, 'Veillez vous connecter', 401);
     return;
   }
@@ -18,7 +19,7 @@ export const isAdmin = (
   res: Response,
   next: NextFunction
 ): void => {
-  if (!req.session?.user?.admin) {
+  if (!(req.session as SessionData).user?.admin) {
     sendError(res, 'Vous n\êtes pas administrateur', 403);
     return;
   }
@@ -30,7 +31,7 @@ export const failIfConnected = (
   res: Response,
   next: NextFunction
 ): void => {
-  if (req.session.user){
+  if ((req.session as SessionData).user){
     sendError(res, 'Please logout', 430);
     return
   }
@@ -43,7 +44,6 @@ export const checkAuth = (
   _res: Response,
   next: NextFunction
 ): void => {
-  req.isAuthenticated = !!req.session?.user;
-  req.currentUser = req.session?.user! ?? null;
+  (req as Req).isAuthenticated = !!(req.session as SessionData).user;
   next();
 };

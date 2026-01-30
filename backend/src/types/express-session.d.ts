@@ -1,6 +1,5 @@
+
 import 'express-session';
-import 'express';
-import { IUser } from './user';
 import { Types } from 'mongoose';
 
 declare module 'express-session' {
@@ -14,7 +13,9 @@ declare module 'express-session' {
   }
 }
 
-declare module 'express' {
+import { Request } from 'express';
+
+declare module 'express-serve-static-core' {
   interface Request {
     isAuthenticated?: boolean;
     currentUser?: {

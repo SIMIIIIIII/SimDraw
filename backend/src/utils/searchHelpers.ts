@@ -2,8 +2,8 @@ import { Document } from "mongoose";
 import { IComment } from "types/comment";
 import { IDrawing } from "types/drawing";
 import { ITF, ITFforIDF, ITFResult } from "types/search";
-import Drawing from "@models/Drawing";
-import Comment from "@models/Comment";
+import Drawing from "../models/Drawing";
+import Comment from "../models/Comment";
 import natural from 'natural'
 const tokenizer = new natural.WordTokenizer();
 

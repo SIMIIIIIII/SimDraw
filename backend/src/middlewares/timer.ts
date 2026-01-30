@@ -1,4 +1,4 @@
-import Drawing from "@models/Drawing";
+import Drawing from "../models/Drawing";
 
 export const setTimer = (drawingId : string) => {
     setTimeout(

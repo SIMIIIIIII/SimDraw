@@ -1,8 +1,8 @@
-import { connexion, getUserInfos, logout } from '@controllers/accountController';
-import { accepteDrawing, admin, refuseDrawing } from '@controllers/adminController';
-import { failIfConnected, isAdmin, isAuthenticated } from '@middlewares/auth';
-import { validateAdminPost, validateConnexionPost } from '@middlewares/validate';
-import { DoesUserExist } from '@middlewares/validateConnexion';
+import { connexion, getUserInfos, logout } from '../controllers/accountController';
+import { accepteDrawing, admin, refuseDrawing } from '../controllers/adminController';
+import { failIfConnected, isAdmin, isAuthenticated } from '../middlewares/auth';
+import { validateAdminPost, validateConnexionPost } from '..//middlewares/validate';
+import { DoesUserExist } from '../middlewares/validateConnexion';
 import express from 'express';
 
 const router = express.Router();

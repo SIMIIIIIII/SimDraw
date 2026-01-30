@@ -1,8 +1,9 @@
 import { Response, Request } from 'express';
-import { sendSuccess, sendError, sendSuccessWithData } from '@middlewares/apiResponse';
-import Drawing from '@models/Drawing';
-import { setTimer } from '@middlewares/timer';
-import User from '@models/User';
+import { sendSuccess, sendError, sendSuccessWithData } from '../middlewares/apiResponse';
+import Drawing from '../models/Drawing';
+import { setTimer } from '../middlewares/timer';
+import User from '../models/User';
+import { SessionData } from '../types/sessionTypes';
 
 
 export const getToDraw = async (
@@ -10,7 +11,7 @@ export const getToDraw = async (
     res : Response
 ) : Promise<void> => {
     try {
-        const drawing = await Drawing.findByIdAndUpdate(req.params.id, {currentTurn: req.session.user?.id});
+        const drawing = await Drawing.findByIdAndUpdate(req.params.id, {currentTurn: (req.session as SessionData).user?.id});
         setTimer(drawing?._id!.toString()!);
 
         sendSuccessWithData(res, 'Your turn', 200, drawing);
@@ -28,7 +29,7 @@ export const saveDraw = async (
         const newPaths = req.body.paths;
         const start = req.body.start;
         const end = req.body.end;
-        const userId = req.session.user?.id;
+        const userId = (req.session as SessionData).user?.id;
         const drawingId = req.params.id;
 
         const drawing = await Drawing.findByIdAndUpdate(

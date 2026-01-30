@@ -1,7 +1,8 @@
 import { Response, Request } from 'express';
-import Comment from '@models/Comment';
+import Comment from '../models/Comment';
 import { Types } from 'mongoose';
-import { sendSuccess, sendError } from '@middlewares/apiResponse';
+import { sendSuccess, sendError } from '../middlewares/apiResponse';
+import { SessionData } from '../types/sessionTypes';
 
 export const createComment = async (
     req : Request,
@@ -14,9 +15,9 @@ export const createComment = async (
         await Comment.create({
             comment: comment,
             author: {
-                authorId: req.session.user?.id! as Types.ObjectId,
-                username: req.session.user?.username!,
-                emoji: req.session.user?.emoji!,
+                authorId: (req.session as SessionData).user?.id! as Types.ObjectId,
+                username: (req.session as SessionData).user?.username!,
+                emoji: (req.session as SessionData).user?.emoji!,
             },
             postId: drawingId,
         });

@@ -1,6 +1,7 @@
 import { Response, Request} from "express";
-import User from "@models/User";
-import { sendSuccessWithData, sendError, sendSuccess } from "@middlewares/apiResponse";
+import User from "../models/User";
+import { sendSuccessWithData, sendError, sendSuccess } from "../middlewares/apiResponse";
+import { SessionData } from "../types/sessionTypes";
 
 export const connexion = async (
     req: Request,
@@ -11,14 +12,14 @@ export const connexion = async (
         const username = req.body.username;
         const user = await User.findOne({ username: username });
 
-        req.session.user = {
+        (req.session as SessionData).user = {
             id: user?._id!,
             username: user?.username!,
             emoji: user?.emoji!,
             admin: user?.admin!,
         };
         
-        sendSuccessWithData(res, 'User successfull connected', 200, req.session.user);
+        sendSuccessWithData(res, 'User successfull connected', 200, (req.session as SessionData).user);
         
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -31,7 +32,7 @@ export const getUserInfos = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const user = await User.findById(req.session.user?.id);
+        const user = await User.findById((req.session as SessionData).user?.id);
         
         const userInfo = {
             username: user?.username,

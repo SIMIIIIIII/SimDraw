@@ -1,6 +1,6 @@
-import { getToDraw, giveUp, saveDraw } from '@controllers/drawController';
-import { isAuthenticated } from '@middlewares/auth';
-import { isCurrentTurn, isPartyOn, validateDrawPost } from '@middlewares/validateDraw';
+import { getToDraw, giveUp, saveDraw } from '../controllers/drawController';
+import { isAuthenticated } from '../middlewares/auth';
+import { isCurrentTurn, isPartyOn, validateDrawPost } from '../middlewares/validateDraw';
 import express from 'express'
 
 const router = express.Router();

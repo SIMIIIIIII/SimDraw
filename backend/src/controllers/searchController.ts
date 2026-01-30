@@ -1,10 +1,11 @@
 import { Response, Request } from "express";
-import { search_helpers } from "@utils/searchHelpers";
+import { search_helpers } from "../utils/searchHelpers";
 import { ITFforIDF } from "types/search";
-import Drawing from "@models/Drawing";
-import { setCanModify } from "@utils/drawingHelpers";
-import { sendError, sendSuccessWithData } from "@middlewares/apiResponse";
+import Drawing from "../models/Drawing";
+import { setCanModify } from "../utils/drawingHelpers";
+import { sendError, sendSuccessWithData } from "../middlewares/apiResponse";
 import { Types } from "mongoose";
+import { Req, SessionData } from "../types/sessionTypes";
 
 export const search = async (
     req: Request,
@@ -26,7 +27,7 @@ export const search = async (
             isPublic: true,
         });
 
-        if (req.isAuthenticated) setCanModify(drawings, req.session.user?.id);
+        if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
 
         const message : string = search_helpers.getSearchMessage(drawings.length, searchTerm);
 

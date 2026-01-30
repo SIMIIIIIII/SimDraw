@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { Document, Types } from 'mongoose';
-import { IDrawing, IParticipant } from 'types/drawing';
-import User from '@models/User';
+import { IDrawing, IParticipant } from '../types/drawing';
+import User from '../models/User';
 import { IComment } from 'types/comment';
 
 const saltRounds = 10;

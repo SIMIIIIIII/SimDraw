@@ -1,6 +1,6 @@
-import { createComment, deleteComment, modifyComment } from '@controllers/commentController';
-import { isAuthenticated } from '@middlewares/auth';
-import { validateCommentId, validateCommentPost, validateCommentPut } from '@middlewares/validateComment';
+import { createComment, deleteComment, modifyComment } from '../controllers/commentController';
+import { isAuthenticated } from '../middlewares/auth';
+import { validateCommentId, validateCommentPost, validateCommentPut } from '../middlewares/validateComment';
 import express from 'express';
 
 const router = express.Router();
