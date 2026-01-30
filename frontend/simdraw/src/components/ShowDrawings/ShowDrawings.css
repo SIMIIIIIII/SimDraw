@@ -1,0 +1,16 @@
+.scrollable-element {
+    max-height: 1000px;
+    overflow-y: auto;
+}
+
+.small-box {
+  border: 2px solid #333;
+  background-color: rgb(246, 206, 133);
+  padding: 10px;
+  resize: none;
+  width: 850px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px auto;
+  text-align: left;
+}

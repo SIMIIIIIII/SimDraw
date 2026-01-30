@@ -1,0 +1,68 @@
+.formulaire {
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+}
+
+nav .form-control {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+
+nav .form-control input[type='text'] {
+  width: 60%;
+  height: 40px;
+  padding: 3px 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.form-control input[type='search'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60%;
+  height: 40px;
+  padding: 3px 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-control input[type='submit'] {
+  height: 40px;
+  padding: 0 20px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.form-control input[type='submit']:hover {
+  background-color: rgb(70, 59, 230);
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .form-control {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-control input[type='text'] {
+        width: 80%;
+    }
+
+    .form-control input[type='search'] {
+        width: 80%;
+    }
+
+    .form-control input[type='submit'] {
+        width: 80%;
+    }
+}

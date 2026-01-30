@@ -1,0 +1,30 @@
+canvas {
+  width: 800px;
+  height: 500px;
+  transition: 'opacity 0.3s';
+  display: block;
+  margin: 0 auto 5px; /*top right bottom */
+  border: 1px solid #333;
+  background: #fff;
+  margin-top: 10px;
+  cursor: crosshair;
+}
+
+canvas.hidden {
+  opacity: 0;
+}
+canvas.visible {
+  opacity: 1;
+}
+
+.hasUp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: 'translate(-50%, -50%)';
+    color: '#999',
+}
+
+.bloc-canvas {
+    min-height: 500px;
+}
