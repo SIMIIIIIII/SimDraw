@@ -1,4 +1,4 @@
-# SimDraw
+# SimDraw (In progress)
 
 Application web de dessin collaboratif permettant à plusieurs utilisateurs de créer des dessins ensemble en temps réel.
 
