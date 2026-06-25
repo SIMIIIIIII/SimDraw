@@ -5,6 +5,6 @@ export const setTimer = (drawingId : string) => {
       async () => {
         await Drawing.findByIdAndUpdate(drawingId, { currentTurn: null });
       },
-      2 * 60 * 1000
+      60 * 1000
     );
 }

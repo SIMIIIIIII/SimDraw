@@ -70,7 +70,7 @@ describe('Comment routes', () => {
         vi.mocked(Comment.findById).mockResolvedValue({author: {authorId: id}} as any);
 
         const res = await agent.delete(`/comment/${id}`);
-        expect(res.status).toBe(204);
+        expect(res.status).toBe(200);
     })
 
     it('DELETE /comment/:id erreur server', async () => {
@@ -94,7 +94,7 @@ describe('Comment routes', () => {
         vi.mocked(Comment.findById).mockResolvedValue({author: {authorId: id}} as any);
 
         const res = await agent.put(`/comment/${id}`).send({comment: "ici"});
-        expect(res.status).toBe(204);
+        expect(res.status).toBe(200);
     })
 
     it ('PUT /comment/:id erreur server', async () => {

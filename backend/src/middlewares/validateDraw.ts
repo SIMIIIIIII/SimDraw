@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import { sendError } from "./apiResponse";
-import { Types } from "mongoose";
 import Drawing from "../models/Drawing";
-import { setTimer } from "./timer";
 import { hasParticipated } from "../utils/helpers";
+import { Req, SessionData } from "../types/sessionTypes";
 import { isValidPath } from "../types/drawing";
-import { SessionData } from "../types/sessionTypes";
 
 export const isPartyOn = () => {
     return async (
@@ -13,60 +11,42 @@ export const isPartyOn = () => {
         res: Response,
         next: NextFunction
     ) : Promise<void> => {
-        const drawingId : string = typeof req.params.id === 'string' ? req.params.id : ' ';
-                
-        if (!Types.ObjectId.isValid(drawingId)){
-            sendError(res, `${drawingId} is not an ObjectId`, 400);
-            return
-        }
-
         try {
-            const drawing = await Drawing.findById(drawingId);
-            if (!drawing){
-                sendError(res, 'drawing do not exist', 404);
-                return
-            }
-                    
-            if (drawing.isDone || drawing.isPublic){
-                sendError(res, 'Drawing is done', 403);
+            const userId = (req.session as SessionData).user?.id;
+             if (!userId) {
+                sendError(res, 'Not authenticated', 401);
                 return;
             }
-            
+
+            const drawings = await Drawing.find(
+                {
+                    isDone: false,
+                    isPublic: false,
+                    currentTurn: null
+                }
+            ) ?? [];
+
+            const availableDrawings = drawings.filter(drawing =>
+                drawing.participants.length < drawing.maxParticipants! &&
+                !hasParticipated(drawing.participants || [], userId)
+            );
+
+            availableDrawings.sort((a, b) : number => {
+                return a.maxParticipants! - a.participants.length - (b.maxParticipants! - b.participants.length);
+            });
+
+            if (availableDrawings.length === 0){
+                sendError(res, 'No party On', 404);
+                return
+            }
+
+            (req as Req).drawingId = availableDrawings[0]?._id!;
             next();
+
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Erreur inconnue';
             sendError(res, message, 500);
         }
-    }
-}
-
-export const isCurrentTurn = () => {
-    return async (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) : Promise<void> => {
-        const drawingId : string = (typeof req.params.id === 'string' ? req.params.id : ' ')
-        const drawing = await Drawing.findById(drawingId);
-
-        if (drawing?.currentTurn && drawing?.currentTurn !== (req.session as SessionData).user?.id) {
-            setTimer(drawingId);
-            sendError(res, 'Someone else is drawing', 403);
-            return;
-        }
-        
-        if (hasParticipated(drawing?.participants!, new Types.ObjectId(drawingId))) {
-            setTimer(drawingId);
-            sendError(res, 'Not your turn', 403);
-            return
-        }
-
-        if (drawing?.participants?.length! >= drawing?.maxParticipants!){
-            await Drawing.findByIdAndUpdate(drawingId, {isDone: true, currentTurn: null});
-            sendError(res, 'Drawing is done', 403);
-            return
-        }
-        next()
     }
 }
 

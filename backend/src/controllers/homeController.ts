@@ -9,7 +9,20 @@ export const home = async (
     res: Response
 ) : Promise<void> => {
     try {
-        const drawings = await Drawing.find({ isDone: true, isPublic: true });
+        const drawings = await Drawing.find({
+            isPublic: true,
+            $or: [
+                { isDone: true },
+                {
+                    $expr: {
+                        $gte: [
+                            { $size: { $ifNull: ['$participants', []] } },
+                            { $ifNull: ['$maxParticipants', 1] }
+                        ]
+                    }
+                }
+            ]
+        });
         sortByUpdatedAt(drawings);
         
         if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
@@ -30,8 +43,18 @@ export const byAuthor = async (
             author: {
                 authorId: id
             },
-            isDone: true,
             isPublic: true,
+            $or: [
+                { isDone: true },
+                {
+                    $expr: {
+                        $gte: [
+                            { $size: { $ifNull: ['$participants', []] } },
+                            { $ifNull: ['$maxParticipants', 1] }
+                        ]
+                    }
+                }
+            ]
         }) 
         sortByUpdatedAt(drawings);
 
@@ -51,9 +74,19 @@ export const byTheme = async (
     try {
         const theme = req.params.theme;
         const drawings = await Drawing.find({
-            isDone: true,
             isPublic: true,
-            theme: (typeof theme ==='string' ? theme : null)
+            theme: (typeof theme ==='string' ? theme : null),
+            $or: [
+                { isDone: true },
+                {
+                    $expr: {
+                        $gte: [
+                            { $size: { $ifNull: ['$participants', []] } },
+                            { $ifNull: ['$maxParticipants', 1] }
+                        ]
+                    }
+                }
+            ]
         }) 
         sortByUpdatedAt(drawings);
 

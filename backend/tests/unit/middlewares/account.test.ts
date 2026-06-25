@@ -147,35 +147,17 @@ describe('Account Route', () => {
             vi.clearAllMocks();
         })
 
-        it('devrait echouer si champ choix n\'existe pas', async() => {
-            req = {body: {drawingId: new Types.ObjectId}}
+        it('devrait echouer si l\'id n\'existe pas', async() => {
+            req = {params : {ici : "ici"}}
             await validateAdminPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalledOnce();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Invalid choice', 400);
-            expect(next).not.toHaveBeenCalled()
-        })
-
-        it('Devrait echouer si mauvais choix', async() => {
-            req = {body: {drawingId: new Types.ObjectId, choice: 'sim'}};
-            await validateAdminPost()(req, res, next);
-
-            expect(apiResponse.sendError).toHaveBeenCalledOnce();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Invalid choice', 400);
-            expect(next).not.toHaveBeenCalled()
-        })
-
-        it('Devrait echouer si champs drawingId manque', async() => {
-            req = {body: { choice: 'accepter'}};
-            await validateAdminPost()(req, res, next);
-
-            expect(apiResponse.sendError).toHaveBeenCalledOnce();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Missed drawingId', 400);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, '  is not an ObjectId', 400);
             expect(next).not.toHaveBeenCalled()
         })
 
         it('Devrait echouer si le drawing avec cet id n\'exists pas', async() => {
-            req = {body: {drawingId: new Types.ObjectId, choice: 'refuser'}};
+            req = {params: {id: `${new Types.ObjectId}`}};
 
             vi.mocked(Drawing.findById).mockResolvedValue(null as any)
             await validateAdminPost()(req, res, next);
@@ -185,18 +167,8 @@ describe('Account Route', () => {
             expect(next).not.toHaveBeenCalled()
         })
 
-        it('Devrait reussir avec accepter comme choix', async() => {
-            req = {body: {drawingId: new Types.ObjectId, choice: 'accepter'}};
-
-            vi.mocked(Drawing.findById).mockResolvedValue({} as any)
-            await validateAdminPost()(req, res, next);
-
-            expect(apiResponse.sendError).not.toHaveBeenCalled();
-            expect(next).toHaveBeenCalled()
-        })
-
-        it('Devrait reussir avec refuser comme choix', async() => {
-            req = {body: {drawingId: new Types.ObjectId, choice: 'refuser'}};
+        it('Devrait reussir si le drawing avec cet id exists pas', async() => {
+            req = {params: {id: `${new Types.ObjectId}`}};
 
             vi.mocked(Drawing.findById).mockResolvedValue({} as any)
             await validateAdminPost()(req, res, next);

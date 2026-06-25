@@ -12,20 +12,22 @@ export const search = async (
     res: Response
 ) : Promise<void> => {
     try {
+
         const searchTerm : string = req.body.searchTerm.trim();
 
         const TFIDF : ITFforIDF[] = await search_helpers.research();
-        const listWords : string[] = search_helpers.filter(searchTerm);
 
-        const filteredWords : ITFforIDF[] = search_helpers.getTFWithWords(TFIDF, listWords);
+        const listWords : string[] = search_helpers.filter(searchTerm);
         
+        const filteredWords : ITFforIDF[] = search_helpers.getTFWithWords(TFIDF, listWords);
         const drawingsIdList : Types.ObjectId[] = filteredWords.map((doc) => doc.drawingId);
 
+        
+
         const drawings = await Drawing.find({
-            id: { $in: drawingsIdList },
-            isDone: true,
-            isPublic: true,
+            _id: { $in: drawingsIdList }
         });
+        
 
         if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
 

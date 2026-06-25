@@ -110,7 +110,20 @@ export const search_helpers = {
     },
 
     research: async () : Promise<ITFforIDF[]> => {
-        const drawings : (IDrawing & Document)[] = await Drawing.find({ isDone: true, isPublic: true });
+        const drawings : (IDrawing & Document)[] = await Drawing.find({
+            isPublic: true,
+            $or: [
+                { isDone: true },
+                {
+                    $expr: {
+                        $gte: [
+                            { $size: { $ifNull: ['$participants', []] } },
+                            { $ifNull: ['$maxParticipants', 1] }
+                        ]
+                    }
+                }
+            ]
+        });
         const TF : ITFforIDF[] = [];
 
         for (let i = 0; i < drawings.length; i++) {

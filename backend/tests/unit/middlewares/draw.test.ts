@@ -5,7 +5,7 @@ import { drawingBelongTo, validateDrawingId, validateDrawingPost } from '../../.
 import { createMockDrawing } from '../../factories/drawingFactory';
 import { Types } from 'mongoose';
 import Comment from '../../../src/models/Comment';
-import { isCurrentTurn, isPartyOn, validateDrawPost } from '../../../src/middlewares/validateDraw'
+import { isPartyOn, validateDrawPost } from '../../../src/middlewares/validateDraw'
 import * as helpers from '../../../src/utils/helpers'
 import * as drawingTypes from '../../../src/types/drawing'
 
@@ -27,55 +27,22 @@ describe('Drawing middlewares', () => {
     });
 
     describe('isPartyOn middlewares', () => {
-        it('Drvrait echouer manquant ou non ObjectId', async () => {
-            req = {params: {}};
-            await isPartyOn()(req, res, next);
-                    
-            expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, '  is not an ObjectId', 400);
-            expect(next).not.toHaveBeenCalled();
-        })
-
         it('Devrait echouer pour drawing inexistant', async () => {
-            req = {params: {id: `${new Types.ObjectId}`}}
-                    
-            vi.mocked(Drawing.findById).mockResolvedValue(null);
+            req = {session : {user : {id: new Types.ObjectId}}}       
+            vi.mocked(Drawing.find).mockResolvedValue(null as any);
                     
             await isPartyOn()(req, res, next);
                     
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'drawing do not exist', 404);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'No party On', 404);
             expect(next).not.toHaveBeenCalled();
         })
         
-        it('Devrait echouer pour drawing terminé', async () => {
-            req = {params: {id: `${new Types.ObjectId}`}}
-            
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: true});
-
-            await isPartyOn()(req, res, next);
-            
-            expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Drawing is done', 403);
-            expect(next).not.toHaveBeenCalled();
-        })
-        
-        it('Devrait echouer pour drawing public', async () => {
-            req = {params: {id: `${new Types.ObjectId}`}}
-                    
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: false, isPublic: true});
-            
-            await isPartyOn()(req, res, next);
-            
-            expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Drawing is done', 403);
-            expect(next).not.toHaveBeenCalled();
-        })
 
         it('Devrait echouer erreur db', async () => {
-            req = {params: {id: `${new Types.ObjectId}`}}
+            req = {session: {user: {id: new Types.ObjectId}}}
                     
-            vi.mocked(Drawing.findById).mockRejectedValue(new Error('ici'));
+            vi.mocked(Drawing.find).mockRejectedValue(new Error('ici'));
             
             await isPartyOn()(req, res, next);
             
@@ -84,31 +51,24 @@ describe('Drawing middlewares', () => {
             expect(next).not.toHaveBeenCalled();
         })
 
-        it('Devrait reuusir pour données valides', async () => {
-            req = {params: {id: `${new Types.ObjectId}`}}
+        it('Devrait reusir pour données valides', async () => {
+            req = {session: {user: {id: new Types.ObjectId}}}
                     
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: false, isPublic: false});
+            vi.mocked(Drawing.find).mockResolvedValue([{
+                isDone: false,
+                isPublic: false,
+                participants: [2],
+                maxParticipants: 3,
+                _id: new Types.ObjectId
+            }] as any);
+
+            vi.mocked(helpers.hasParticipated).mockReturnValue(false);
+            
             
             await isPartyOn()(req, res, next);
             
             expect(apiResponse.sendError).not.toHaveBeenCalled();
             expect(next).toHaveBeenCalled();
-        })
-    })
-
-    describe('isCurrentTurn middlewares', () => {
-        it('devrait echouer pour pas currentTurn null', async () => {
-            req = {
-                params: {id: `${new Types.ObjectId}`},
-                session: {user: {id: new Types.ObjectId}}
-            }
-            vi.mocked(Drawing.findById).mockResolvedValue({currentTurn: new Types.ObjectId});
-
-            await isCurrentTurn()(req, res, next);
-
-            expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Someone else is drawing', 403);
-            expect(next).not.toHaveBeenCalled();
         })
 
         it('devrait echouer si déjà participer', async () => {
@@ -117,13 +77,13 @@ describe('Drawing middlewares', () => {
                 params: {id: `${id}`},
                 session: {user: {id: id}}
             }
-            vi.mocked(Drawing.findById).mockResolvedValue({currentTurn: id,});
+            vi.mocked(Drawing.find).mockResolvedValue([] as any);
             vi.mocked(helpers.hasParticipated).mockReturnValue(true);
 
-            await isCurrentTurn()(req, res, next);
+            await isPartyOn()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Not your turn', 403);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'No party On', 404);
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -133,35 +93,22 @@ describe('Drawing middlewares', () => {
                 params: {id: `${id}`},
                 session: {user: {id: id}}
             }
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                currentTurn: id, participants: ["oo"], maxParticipants: 1});
+            vi.mocked(Drawing.find).mockResolvedValue([{
+                currentTurn: id,
+                participants: [8],
+                maxParticipants: 1}
+            ] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({currentTurn: id,});
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
 
-            await isCurrentTurn()(req, res, next);
+            await isPartyOn()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'Drawing is done', 403);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'No party On', 404);
             expect(next).not.toHaveBeenCalled();
         })
-
-        it('devrait reussir', async () => {
-            const id = new Types.ObjectId;
-            req = {
-                params: {id: `${id}`},
-                session: {user: {id: id}}
-            }
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                currentTurn: id, participants: ["oo"], maxParticipants: 2});
-            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({currentTurn: id,});
-            vi.mocked(helpers.hasParticipated).mockReturnValue(false);
-
-            await isCurrentTurn()(req, res, next);
-
-            expect(apiResponse.sendError).not.toHaveBeenCalled();
-            expect(next).toHaveBeenCalled();
-        })
     })
+
 
     describe('validateDrawPost', () => {
         it('devrait echouer pour start manquant', async () => {

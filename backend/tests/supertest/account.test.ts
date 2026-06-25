@@ -113,7 +113,7 @@ describe('Account Route', () => {
 
             res = await agent.get('/account/logout');
             
-            expect(res.status).toBe(204);
+            expect(res.status).toBe(200);
 
             res = await agent.get('/account');
             
@@ -137,7 +137,7 @@ describe('Account Route', () => {
 
             res = await agent.get('/account/logout');
             
-            expect(res.status).toBe(204);
+            expect(res.status).toBe(200);
 
             res = await agent.get('/account');
             
@@ -188,13 +188,10 @@ describe('Account Route', () => {
             vi.mocked(Drawing.findById).mockResolvedValue({} as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({} as any);
 
-            const res = await agent.put('/account/admin').send(
-                {
-                    choice: 'accepter',
-                    drawingId: new Types.ObjectId
-                }
-            );
-            expect(res.status).toBe(204);
+            const res = await agent.put(`/account/admin/${new Types.ObjectId}`)
+
+            console.log(res.body)
+            expect(res.status).toBe(200);
         })
 
         it('accepter', async () => {
@@ -204,13 +201,8 @@ describe('Account Route', () => {
             vi.mocked(Drawing.findById).mockResolvedValue({} as any);
             vi.mocked(Drawing.findByIdAndDelete).mockResolvedValue({} as any);
 
-            const res = await agent.delete('/account/admin').send(
-                {
-                    choice: 'refuser',
-                    drawingId: new Types.ObjectId
-                }
-            );
-            expect(res.status).toBe(204);
+            const res = await agent.delete(`/account/admin/${new Types.ObjectId}`)
+            expect(res.status).toBe(200);
         })
 
         it('erreur server', async () => {
@@ -220,12 +212,8 @@ describe('Account Route', () => {
             vi.mocked(Drawing.findById).mockRejectedValue(new Error(' '));
             vi.mocked(Drawing.findByIdAndDelete).mockResolvedValue({} as any);
 
-            const res = await agent.delete('/account/admin').send(
-                {
-                    choice: 'refuser',
-                    drawingId: new Types.ObjectId
-                }
-            );
+            const res = await agent.delete(`/account/admin/${new Types.ObjectId}`)
+            
             expect(res.body.success).toBeFalsy();
             expect(res.status).toBe(500);
         })

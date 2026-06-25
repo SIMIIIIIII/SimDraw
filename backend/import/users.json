@@ -1,0 +1,84 @@
+[
+  {
+    "_id": "704f3e458abd62de6da345ce",
+    "username": "Admin",
+    "name": "Administrateur",
+    "email": "admin@gmail.com",
+    "password": "$2b$10$WdTmA3m4CTtBOliBBSq5NOWZDfMzyax3vEQ9BMQ/nXHG6BxUcRWJG",
+    "emoji": "👑",
+    "admin": true,
+    "drawings": []
+  },
+  {
+    "_id": "693f2e458abd69de4da949ce",
+    "username": "simiii",
+    "name": "SIM",
+    "email": "sim.lama@gmail.com",
+    "password": "$2b$10$WdTmA3m4CTtBOliBBSq5NOWZDfMzyax3vEQ9BMQ/nXHG6BxUcRWJG",
+    "emoji": "🤪",
+    "admin": true,
+    "drawings": [
+      {
+        "drawingId": "693f3523e5d392eb79d987f4",
+        "date": "2025-12-14T22:08:44.887Z"
+      },
+      {
+        "drawingId": "693f401f05a5ab319472526f",
+        "date": "2025-12-14T22:54:58.534Z"
+      }
+    ]
+  },
+  {
+    "_id": "693f35aa499314582b86cc7d",
+    "username": "thesim",
+    "name": "SIMIII",
+    "email": "emoji2@gmail.com",
+    "password": "$2b$10$WdTmA3m4CTtBOliBBSq5NOWZDfMzyax3vEQ9BMQ/nXHG6BxUcRWJG",
+    "emoji": "🤔",
+    "admin": false,
+    "drawings": [
+      {
+        "drawingId": "693f3523e5d392eb79d987f4",
+        "date": "2025-12-14T22:10:05.121Z"
+      },
+      {
+        "drawingId": "693f401f05a5ab319472526f",
+        "date": "2025-12-15T00:48:43.248Z"
+      }
+    ]
+  },
+  {
+    "_id": "693f35ea499314582b86cea7",
+    "username": "thesimi",
+    "name": "Simeon",
+    "email": "emoji3@gmail.com",
+    "password": "$2b$10$WdTmA3m4CTtBOliBBSq5NOWZDfMzyax3vEQ9BMQ/nXHG6BxUcRWJG",
+    "emoji": "🫡",
+    "admin": false,
+    "drawings": [
+      {
+        "drawingId": "693f3523e5d392eb79d987f4",
+        "date": "2025-12-14T22:11:19.308Z"
+      }
+    ]
+  },
+  {
+    "_id": "693f364f499314582b86d293",
+    "username": "julie05",
+    "name": "Julietta",
+    "email": "emoji4@gmail.com",
+    "password": "$2b$10$WdTmA3m4CTtBOliBBSq5NOWZDfMzyax3vEQ9BMQ/nXHG6BxUcRWJG",
+    "emoji": "🌸",
+    "admin": false,
+    "drawings": [
+      {
+        "drawingId": "693f401f05a5ab319472526f",
+        "date": "2025-12-14T22:56:27.450Z"
+      },
+      {
+        "drawingId": "693f406805a5ab3194725b2f",
+        "date": "2025-12-15T00:44:36.284Z"
+      }
+    ]
+  }
+]

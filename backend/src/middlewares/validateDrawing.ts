@@ -47,7 +47,11 @@ export const validateDrawingId = () => {
                 return
             }
 
-            if (!drawing.isDone || !drawing.isPublic){
+            const participantCount = drawing.participants?.length || 0;
+            const maxParticipants = drawing.maxParticipants || 1;
+            const isLegacyCompleted = participantCount >= maxParticipants;
+
+            if (!drawing.isPublic || (!drawing.isDone && !isLegacyCompleted)){
                 sendError(res, 'Drawing not public', 403);
                 return;
             }

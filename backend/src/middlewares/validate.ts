@@ -3,6 +3,7 @@ import Drawing from "../models/Drawing";
 import { checkEmail, checkPassword, checkUsername } from "../utils/validator";
 import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose";
+import { Req } from "../types/sessionTypes";
 
 export const validateObjectId = (paramName: string) => {
     return (
@@ -101,17 +102,11 @@ export const validateAdminPost = () => {
         res: Response,
         next: NextFunction
     ) : Promise<void> => {
-        const choice : string = req.body.choice;
-        const drawingId: string = req.body.drawingId;
+        const drawingId : string = typeof req.params.id === 'string' ? req.params.id : ' ';
 
-        if (!choice || (!choice.includes('refuser') && !choice.includes('accepter'))){
-            sendError(res, 'Invalid choice', 400);
-            return;
-        }
-
-        if (!drawingId){
-            sendError(res, 'Missed drawingId', 400);
-            return;
+        if (!Types.ObjectId.isValid(drawingId)){
+            sendError(res, `${drawingId} is not an ObjectId`, 400);
+            return
         }
 
         if (! await Drawing.findById(drawingId)){
@@ -119,6 +114,7 @@ export const validateAdminPost = () => {
             return;
         }
 
+        (req as Req).drawingId = new Types.ObjectId(drawingId);
         next();
     }
 }

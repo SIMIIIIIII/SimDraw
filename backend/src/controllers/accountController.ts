@@ -41,7 +41,7 @@ export const getUserInfos = async (
             email: user?.email,
             emoji:user?.emoji,
         }
-        sendSuccessWithData(res, 'Users informations', 200, userInfo)
+        sendSuccessWithData(res, 'Informations sur l\'utilisateur', 200, userInfo)
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);
@@ -58,6 +58,6 @@ export const logout = async (
             return;
         }
         res.clearCookie('connect.sid');
-        sendSuccess(res, 'User deconnecté', 204);
+        sendSuccess(res, 'Vous êtes deconnecté', 200);
     });
 }

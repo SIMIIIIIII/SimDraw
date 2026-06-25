@@ -97,7 +97,7 @@ describe('Drawing routes', () => {
 
             const res = await agent.put(`/drawing/like/${id}`);
 
-            expect(res.status).toBe(205);
+            expect(res.status).toBe(200);
         })
 
         it('Disliker un dessin', async() => {
@@ -112,7 +112,7 @@ describe('Drawing routes', () => {
 
             const res = await agent.put(`/drawing/like/${id}`);
 
-            expect(res.status).toBe(204);
+            expect(res.status).toBe(200);
         })
 
         it('echouer', async() => {
@@ -168,7 +168,7 @@ describe('Drawing routes', () => {
 
         const res = await agent.delete(`/drawing/${new Types.ObjectId}`);
 
-        expect(res.status).toBe(204);
+        expect(res.status).toBe(200);
     })
 
     it('DELETE /drawing/:id echouer', async () => {

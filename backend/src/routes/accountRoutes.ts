@@ -34,7 +34,7 @@ router.get(
 )
 
 router.put(
-    '/admin',
+    '/admin/:id',
     isAuthenticated,
     isAdmin,
     validateAdminPost(),
@@ -42,7 +42,7 @@ router.put(
 )
 
 router.delete(
-    '/admin',
+    '/admin/:id',
     isAuthenticated,
     isAdmin,
     validateAdminPost(),

@@ -35,7 +35,7 @@ export const deleteComment = async (
 ) : Promise<void> => {
     try {
         await Comment.findByIdAndDelete(req.params.id);
-        sendSuccess(res, 'Comment deleted successfully', 204);
+        sendSuccess(res, 'Comment supprimé', 200);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);
@@ -48,7 +48,7 @@ export const modifyComment = async (
 ) : Promise<void> => {
     try {
         await Comment.findByIdAndUpdate(req.params.id, {comment: req.body.comment})
-        sendSuccess(res, 'Comment modify', 204);
+        sendSuccess(res, 'Comment modifié', 200);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);

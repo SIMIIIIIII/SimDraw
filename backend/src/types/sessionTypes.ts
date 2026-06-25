@@ -11,4 +11,5 @@ export interface SessionData {
   
 export interface Req {
     isAuthenticated?: boolean;
+    drawingId?: Types.ObjectId
 }

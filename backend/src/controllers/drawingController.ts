@@ -20,7 +20,7 @@ export const createDrawing = async (
                 emoji: (req.session as SessionData).user?.emoji!,
             },
             description: req.body.description,
-            maxParticipants: req.body.maxParticipants || 1,
+            maxParticipants: req.body.maxParticipants || 2,
         });
         sendSuccess(res, 'Drawing created successfull', 201);
     } catch (error) {
@@ -74,8 +74,8 @@ export const likeDrawing = async (
                     }
                 }
             );
-            message = 'Drawing liked'
-            sendSuccess(res, message, 205);
+            message = 'Dessin liké'
+            sendSuccessWithData(res, message, 200, 1);
         }
 
         else {
@@ -87,8 +87,8 @@ export const likeDrawing = async (
                 }
             );
             
-            message = 'Like removed'
-            sendSuccess(res, message, 204);
+            message = 'Like enlevé'
+            sendSuccessWithData(res, message, 200, -1);
         }
         
     } catch (error) {
@@ -103,7 +103,7 @@ export const deleteDrawing = async (
 ) : Promise<void> => {
     try {
         await Drawing.findByIdAndDelete(req.params.id);
-        sendSuccess(res, 'Drawing deleted', 204);
+        sendSuccess(res, 'Dessin supprimé', 200);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);
@@ -122,7 +122,7 @@ export const modifyDrawing = async (
                 description: req.body.description
             }
         )
-        sendSuccessWithData(res, 'Drawings Info modified', 200, drawing);
+        sendSuccessWithData(res, 'Les informations du dessin mises à jour', 200, drawing);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);

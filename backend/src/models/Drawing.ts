@@ -170,6 +170,6 @@ const DrawingSchema : Schema = new Schema ({
     timestamps: true
 })
 
-interface IDrawingDocument extends IDrawing, Document {}
+export interface IDrawingDocument extends IDrawing, Document {}
 export default mongoose.model<IDrawingDocument>('Drawing', DrawingSchema)
 

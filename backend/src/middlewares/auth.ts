@@ -8,7 +8,7 @@ export const isAuthenticated = (
   next: NextFunction
 ): void => {
   if (!(req.session as SessionData).user) {
-    sendError(res, 'Veillez vous connecter', 401);
+    sendError(res, 'Connexion: Veuillez vous connecter!!!', 401);
     return;
   }
   next();

@@ -18,20 +18,22 @@ export const hashPassword = async (password : string) : Promise<string> => {
 
 export const formattedParticipants = async (drawing: (IDrawing & Document)) : Promise<void> => {
     const used : Types.ObjectId[] = [];
-    drawing.formattedParticipants = [];
+    const formatted: { userId: Types.ObjectId; username: string }[] = [];
 
     for (let i = 0; i < drawing.participants.length; i++) {
         const userId = drawing.participants[i]?.userId;
         
         if (!used.includes(userId!)) {
             const user = await User.findById(userId);
-            drawing.formattedParticipants.push({
+            formatted.push({
                 userId: userId!,
                 username: user?.username || 'Inconnu.e',
             });
             used.push(userId!);
         }
     }
+
+    (drawing as any).formattedParticipants = formatted;
 }
 
 export const hasCommented = (comments : (IComment & Document)[], userId : Types.ObjectId) : void => {
@@ -46,7 +48,7 @@ export const hasCommented = (comments : (IComment & Document)[], userId : Types.
 
 export const hasParticipated = (participants: IParticipant[], userId: Types.ObjectId) : boolean => {
     for (let index = 0; index < participants.length; index++) {
-        if (participants[index]?.userId === userId) return true;
+        if (participants[index]?.userId?.toString() === userId.toString()) return true;
     }
 
     return false;

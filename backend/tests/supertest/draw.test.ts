@@ -24,6 +24,14 @@ vi.mock('../../src/models/Drawing');
 vi.mock('../../src/utils/helpers')
 vi.mock('../../src/types/drawing')
 
+const createAvailableDrawing = (id: Types.ObjectId = new Types.ObjectId()) => ({
+    _id: id,
+    participants: ["oo"],
+    maxParticipants: 2,
+    isDone: false,
+    isPublic: false,
+    currentTurn: null,
+});
 
 const connexion = async(
     agent : TestAgent,
@@ -39,22 +47,20 @@ const connexion = async(
 }
 
 describe('Draw routes', () => {
-    describe('GET /draw/:id', () => {
+    describe('GET /draw', () => {
         it('devrait reussir', async () => {
             const id = new Types.ObjectId;
             const agent = request.agent(app);
             await connexion(agent);
 
-            
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
-            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({_id: id,});
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
+            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({_id: id} as any);
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
 
-            const res = await agent.get(`/draw/${id}`);
+            const res = await agent.get('/draw');
             
             expect(res.body.success).toBeTruthy();
+            console.log(res.body)
             expect(res.status).toBe(200);
         })
 
@@ -63,14 +69,11 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockRejectedValue(new Error('ici'));
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
 
-            const res = await agent.get(`/draw/${id}`);
+            const res = await agent.get('/draw');
             
             expect(res.body.success).toBeFalsy();
             expect(res.status).toBe(500);
@@ -86,9 +89,7 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({participants:["is"], maxParticipants: 2});
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
             vi.mocked(drawingTypes.isValidPath).mockReturnValue(true);
@@ -96,7 +97,7 @@ describe('Draw routes', () => {
 
             const res = await agent.put(`/draw/${id}`).send({ paths: "ici", start: 3, end: 5});
             
-            expect(res.status).toBe(204);
+            expect(res.status).toBe(200);
             expect(Drawing.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         })
 
@@ -105,18 +106,16 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
-            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({participants:["is"], maxParticipants: 1});
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
+            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({participants:["is"], maxParticipants: 1, save: vi.fn().mockResolvedValue({})} as any);
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
             vi.mocked(drawingTypes.isValidPath).mockReturnValue(true);
             vi.mocked(User.findByIdAndUpdate).mockResolvedValue({});
 
             const res = await agent.put(`/draw/${id}`).send({ paths: "ici", start: 3, end: 5});
             
-            expect(res.status).toBe(204);
-            expect(Drawing.findByIdAndUpdate).toHaveBeenCalledTimes(2);
+            expect(res.status).toBe(200);
+            expect(Drawing.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         })
 
         it('Devrait echouer', async () => {
@@ -124,9 +123,7 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({participants:["is"], maxParticipants: 1});
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
             vi.mocked(drawingTypes.isValidPath).mockReturnValue(true);
@@ -145,16 +142,13 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue({_id: id,});
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
 
             const res = await agent.put(`/draw/giveup/${id}`);
             
-            expect(res.status).toBe(204);
+            expect(res.status).toBe(200);
         })
 
         it('devrait echouer', async () => {
@@ -162,10 +156,7 @@ describe('Draw routes', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            
-            vi.mocked(Drawing.findById).mockResolvedValue({
-                participants: ["oo"], maxParticipants: 2, isDone: false, isPublic: false
-            });
+            vi.mocked(Drawing.find).mockResolvedValue([createAvailableDrawing(id)] as any);
             vi.mocked(Drawing.findByIdAndUpdate).mockRejectedValue(new Error('ici'));
             vi.mocked(helpers.hasParticipated).mockReturnValue(false);
 

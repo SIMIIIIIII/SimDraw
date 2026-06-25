@@ -31,8 +31,8 @@ export const sendError = (
   error: string,
   status = 500
 ): void => {
-  res.status(status).json({
-    success: false,
-    error: error
-  } as ApiError);
+    res.status(status).json({
+        success: false,
+        error: error
+    } as ApiError);
 };

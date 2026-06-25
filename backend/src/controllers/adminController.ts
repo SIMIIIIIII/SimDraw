@@ -1,6 +1,7 @@
 import { Response, Request } from 'express'
 import Drawing from '../models/Drawing';
 import { sendSuccessWithData, sendError, sendSuccess } from '../middlewares/apiResponse';
+import { Req } from '../types/sessionTypes';
 
 export const admin = async (
     _req: Request,
@@ -8,8 +9,18 @@ export const admin = async (
 ) : Promise<void> => {
     try {
         const drawings = await Drawing.find({
-            isDone: true,
             isPublic: false,
+            $or: [
+                { isDone: true },
+                {
+                    $expr: {
+                        $gte: [
+                            { $size: { $ifNull: ['$participants', []] } },
+                            { $ifNull: ['$maxParticipants', 1] }
+                        ]
+                    }
+                }
+            ]
         });
         
         sendSuccessWithData(res, 'Dessins finis', 201, drawings);
@@ -25,10 +36,14 @@ export const accepteDrawing = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const drawingId = req.body.drawingId;
+        const drawingId = (req as Req).drawingId
 
-        await Drawing.findByIdAndUpdate(drawingId, {isPublic: true})
-        sendSuccess(res, 'Dessin rendu publique', 204);
+        await Drawing.findByIdAndUpdate(drawingId, {
+            isPublic: true,
+            isDone: true,
+            currentTurn: null,
+        })
+        sendSuccess(res, 'Dessin rendu publique', 200);
         
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -41,10 +56,10 @@ export const refuseDrawing = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const drawingId = req.body.drawingId;
+        const drawingId = (req as Req).drawingId
 
         await Drawing.findByIdAndDelete(drawingId);
-        sendSuccess(res, 'Dessin Supprimé', 204);
+        sendSuccess(res, 'Dessin Supprimé', 200);
         
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
