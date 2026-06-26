@@ -1,6 +1,8 @@
 import express, { Application, Request, Response } from 'express';
 import session from 'express-session';
 import { sessionConfig } from './config/session';
+import { configureHelmet } from './config/secutity';
+import { corsOptions } from './config/cors.config';
 
 import HomeRoutes from './routes/homeRoutes';
 import SubscriptionRoute from './routes/subscriptionRoutes'
@@ -10,15 +12,12 @@ import Drawing from './routes/drawingRoutes';
 import Draw from './routes/drawRoutes'
 import cors from 'cors'
  
-const app: Application = express(); 
+const app: Application = express();
+
+configureHelmet(app)
  
 // Middlewares globaux 
-app.use(
-  cors({
-    origin: 'http://localhost:8080',
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 

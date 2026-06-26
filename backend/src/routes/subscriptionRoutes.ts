@@ -3,11 +3,13 @@ import { validateUniqueEmail, validateUniqueUsername } from '../middlewares/vali
 import express from 'express'
 import { subscription } from '../controllers/subscriptionController';
 import { failIfConnected } from '../middlewares/auth';
+import { createAccountLimiter } from '../middlewares/rateLimiters';
 
 const router = express.Router();
 
 router.post(
     '/',
+    createAccountLimiter,
     failIfConnected,
     validateSubscriptionPost(),
     validateUniqueEmail(),

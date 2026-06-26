@@ -3,12 +3,14 @@ import { accepteDrawing, admin, refuseDrawing } from '../controllers/adminContro
 import { failIfConnected, isAdmin, isAuthenticated } from '../middlewares/auth';
 import { validateAdminPost } from '..//middlewares/validate';
 import { validateConnexion } from '../middlewares/validateConnexion';
+import { authLimiter, readLimiter, writeLimiter } from '../middlewares/rateLimiters';
 import express from 'express';
 
 const router = express.Router();
 
 router.post(
     '/login',
+    authLimiter,
     failIfConnected,
     validateConnexion(),
     connexion
@@ -16,6 +18,7 @@ router.post(
 
 router.get(
     '/',
+    readLimiter,
     isAuthenticated,
     getUserInfos
 )
@@ -27,6 +30,7 @@ router.get(
 
 router.get(
     '/admin',
+    readLimiter,
     isAuthenticated,
     isAdmin,
     admin
@@ -34,6 +38,7 @@ router.get(
 
 router.put(
     '/admin/:id',
+    writeLimiter,
     isAuthenticated,
     isAdmin,
     validateAdminPost(),
@@ -42,6 +47,7 @@ router.put(
 
 router.delete(
     '/admin/:id',
+    writeLimiter,
     isAuthenticated,
     isAdmin,
     validateAdminPost(),

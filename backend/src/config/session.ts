@@ -1,13 +1,18 @@
 
-import { SESSION_SECRET} from './env';
+import { SessionOptions } from 'express-session';
+import { NODE_ENV, SESSION_SECRET } from './env';
 
-export const sessionConfig = {
+const isProduction = NODE_ENV === 'production';
+
+export const sessionConfig: SessionOptions = {
     secret: SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { 
         path: '/', 
         httpOnly: true, 
+        secure: isProduction,
+        sameSite: isProduction ? ('none' as const) : ('lax' as const),
         maxAge: 3600000
     }
 }
