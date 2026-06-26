@@ -119,4 +119,4 @@ npm test
 
 ## Statut
 
-Le frontend est fonctionnel pour servir de client à l'API principale. Certaines parties restent en cours d'alignement avec le backend, ce qui est normal dans un projet encore en développement.
+Le frontend est fonctionnel pour servir de client à l'API principale. Certaines parties restent en cours d'alignement avec le backend.

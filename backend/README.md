@@ -168,7 +168,3 @@ Exemple :
 cd backend
 npm test
 ```
-
-## Remarques
-
-Le backend est déjà bien structuré pour continuer un apprentissage orienté API, validation, sécurité, tests et déploiement.
