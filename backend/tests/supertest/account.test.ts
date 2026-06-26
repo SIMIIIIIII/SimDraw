@@ -172,7 +172,7 @@ describe('Account Route', () => {
             const agent = request.agent(app);
             await connexion(agent);
 
-            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '))
+            vi.mocked(Drawing.findPublicCompleted).mockRejectedValue(new Error(' '))
             const res = await agent.get('/account/admin');
 
             expect(res.body.success).toBeFalsy();

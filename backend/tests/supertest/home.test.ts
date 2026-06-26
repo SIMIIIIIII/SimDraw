@@ -66,7 +66,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockResolvedValue(mockDrawings as any);
+            vi.mocked(Drawing.findPublicCompleted).mockResolvedValue(mockDrawings as any);
             
             const res = await request(app).get('/');
 
@@ -83,7 +83,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            vi.mocked(Drawing.findPublicCompleted).mockRejectedValue(new Error(' '));
             
             const res = await request(app).get('/');
             
@@ -101,7 +101,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            vi.mocked(Drawing.findPublicCompleted).mockRejectedValue(new Error(' '));
             
             const res = await request(app).get(`/by/author/${mockDrawings[0].author.authorId}`);
             
@@ -115,7 +115,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockResolvedValue(mockDrawings as any);
+            vi.mocked(Drawing.findPublicCompleted).mockResolvedValue(mockDrawings as any);
             
             const res = await request(app).get(`/by/author/${mockDrawings[0].author.authorId}`);
             
@@ -150,7 +150,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockResolvedValue(mockDrawings as any);
+            vi.mocked(Drawing.findPublicCompleted).mockResolvedValue(mockDrawings as any);
             
             const res = await request(app).get(`/by/theme/${mockDrawings[0].theme}`);
 
@@ -166,7 +166,7 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '));
+            vi.mocked(Drawing.findPublicCompleted).mockRejectedValue(new Error(' '));
             
             const res = await request(app).get(`/by/theme/${mockDrawings[0].theme}`);
 
@@ -252,14 +252,15 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockResolvedValue(mockDrawings as any);
+            const equalsMock = vi.fn().mockResolvedValue(mockDrawings as any);
+            vi.mocked(Drawing.where).mockReturnValue({ equals: equalsMock } as any);
 
             const res = await agent.get('/my_drawings');
             expect(res.body.success).toBeTruthy()
 
         })
 
-        it('Connecter donc ne devrait pas echouer', async () => {
+        it('erreur server', async () => {
             const agent = request.agent(app);
             await connexion(agent);
 
@@ -268,7 +269,8 @@ describe('Home Page', () => {
                 createMockDrawing({title: 'Dessin 2'})
             ];
 
-            vi.mocked(Drawing.find).mockRejectedValue(new Error(' '))
+            const equalsMock = vi.fn().mockRejectedValue(new Error(' '));
+            vi.mocked(Drawing.where).mockReturnValue({ equals: equalsMock } as any);
 
             const res = await agent.get('/my_drawings');
 

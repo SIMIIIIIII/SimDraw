@@ -1,7 +1,7 @@
 import { vi, expect, describe, beforeEach, it } from 'vitest'
 import Drawing from '../../../src/models/Drawing';
 import * as apiResponse from '../../../src/middlewares/apiResponse';
-import { drawingBelongTo, validateDrawingId, validateDrawingPost } from '../../../src/middlewares/validateDrawing';
+import { drawingBelongTo, validateDrawingId} from '../../../src/middlewares/validateDrawing';
 import { createMockDrawing } from '../../factories/drawingFactory';
 import { Types } from 'mongoose';
 import Comment from '../../../src/models/Comment';
@@ -114,9 +114,9 @@ describe('Drawing middlewares', () => {
         it('devrait echouer pour start manquant', async () => {
             req = {body : {}}
             await validateDrawPost()(req, res, next);
-
+            
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'start index invalid', 400)
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "Invalid input: expected number, received undefined", 400)
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -129,7 +129,7 @@ describe('Drawing middlewares', () => {
             await validateDrawPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'start index invalid', 400);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "Invalid input: expected number, received string", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -142,7 +142,7 @@ describe('Drawing middlewares', () => {
             await validateDrawPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'start index invalid', 400);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "Start doit être >= 0", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -151,7 +151,7 @@ describe('Drawing middlewares', () => {
             await validateDrawPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'end index invalid', 400)
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "Invalid input: expected number, received undefined", 400)
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -164,7 +164,7 @@ describe('Drawing middlewares', () => {
             await validateDrawPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'end index invalid', 400);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "Invalid input: expected number, received string", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
@@ -177,7 +177,7 @@ describe('Drawing middlewares', () => {
             await validateDrawPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenCalledWith(res, 'end index invalid', 400);
+            expect(apiResponse.sendError).toHaveBeenCalledWith(res, "End doit être >= 0", 400);
             expect(next).not.toHaveBeenCalled();
         })
 

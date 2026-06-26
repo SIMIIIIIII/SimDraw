@@ -14,6 +14,8 @@ import { AnyCnameRecord } from 'dns';
 import * as helpers from '../../src/utils/helpers'
 import * as apiResponse from '../../src/middlewares/apiResponse'
 import { createMockAuthor } from '../factories/authorFactory';
+import * as validateDrawing from '../../src/middlewares/validateDrawing';
+
 
 vi.mock('../../src/models/User');
 vi.mock('../../src/utils/validator');
@@ -21,7 +23,7 @@ vi.mock('bcrypt');
 vi.mock('../../src/models/Comment');
 vi.mock('../../src/models/Drawing');
 vi.mock('../../src/utils/helpers')
-//vi.mock('../../src/middlewares/apiResponse');
+
 
 const connexion = async(
     agent : TestAgent,
@@ -88,42 +90,59 @@ describe('Drawing routes', () => {
         it('Liker un dessin', async() => {
             const id = new Types.ObjectId
             const agent = request.agent(app);
-            const drawing = {isDone: true, isPublic: true, whoLiked: [], likes: 5}
+            const drawing = {
+                isDone: true,
+                isPublic: true,
+                whoLiked: [],
+                likes: 5,
+                toggleLike: vi.fn().mockResolvedValue(1)
+            }
 
             await connexion(agent);
 
             vi.mocked(Drawing.findById).mockResolvedValue(drawing);
-            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue(drawing as any);
 
             const res = await agent.put(`/drawing/like/${id}`);
 
             expect(res.status).toBe(200);
+            expect(drawing.toggleLike).toHaveBeenCalled();
         })
 
         it('Disliker un dessin', async() => {
             const id = new Types.ObjectId
             const agent = request.agent(app);
-            const drawing = {isDone: true, isPublic: true, whoLiked: [id], likes: 5}
+            const drawing = {
+                isDone: true,
+                isPublic: true,
+                whoLiked: [id],
+                likes: 5,
+                toggleLike: vi.fn().mockResolvedValue(-1)
+            }
 
             await connexion(agent, true, id);
 
             vi.mocked(Drawing.findById).mockResolvedValue(drawing);
-            vi.mocked(Drawing.findByIdAndUpdate).mockResolvedValue(drawing as any);
 
             const res = await agent.put(`/drawing/like/${id}`);
 
             expect(res.status).toBe(200);
+            expect(drawing.toggleLike).toHaveBeenCalled();
         })
 
         it('echouer', async() => {
             const id = new Types.ObjectId
             const agent = request.agent(app);
-            const drawing = {isDone: true, isPublic: true, whoLiked: [], likes: 5}
+            const drawing = {
+                isDone: true,
+                isPublic: true,
+                whoLiked: [],
+                likes: 5,
+                toggleLike: vi.fn().mockRejectedValue(new Error(' '))
+            }
 
             await connexion(agent);
 
             vi.mocked(Drawing.findById).mockResolvedValue(drawing);
-            vi.mocked(Drawing.findByIdAndUpdate).mockRejectedValue(new Error(' '));
 
             const res = await agent.put(`/drawing/like/${id}`);
 
@@ -137,10 +156,22 @@ describe('Drawing routes', () => {
         const agent = request.agent(app);
         await connexion(agent);
 
+        vi.spyOn(validateDrawing.createDrawingSchema, 'safeParse').mockReturnValue({
+            success: true,
+            data: {
+                title: 'Titre 1',
+                theme: 'Nature',
+                description: 'essaie',
+                maxParticipants: 2
+            }
+        } as any);
+
         vi.mocked(Drawing.create).mockResolvedValue({} as any);
 
         const res = await agent.post('/drawing').send({title: 'Titre 1', description: 'essaie'});
         
+        console.log(res.status)
+        console.log(res.body)
         expect(res.body.success).toBeTruthy();
         expect(res.status).toBe(201);
 
@@ -149,6 +180,16 @@ describe('Drawing routes', () => {
     it('POST /drawing echouer', async() => {
         const agent = request.agent(app);
         await connexion(agent);
+
+        vi.spyOn(validateDrawing.createDrawingSchema, 'safeParse').mockReturnValue({
+            success: true,
+            data: {
+                title: 'Titre 1',
+                theme: 'Nature',
+                description: 'essaie',
+                maxParticipants: 2
+            }
+        } as any);
 
         vi.mocked(Drawing.create).mockRejectedValue(new Error(' '));
 

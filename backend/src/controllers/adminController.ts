@@ -8,19 +8,9 @@ export const admin = async (
     res: Response,
 ) : Promise<void> => {
     try {
-        const drawings = await Drawing.find({
+        const drawings = await Drawing.findPublicCompleted({
             isPublic: false,
-            $or: [
-                { isDone: true },
-                {
-                    $expr: {
-                        $gte: [
-                            { $size: { $ifNull: ['$participants', []] } },
-                            { $ifNull: ['$maxParticipants', 1] }
-                        ]
-                    }
-                }
-            ]
+            isDone: true
         });
         
         sendSuccessWithData(res, 'Dessins finis', 201, drawings);

@@ -4,6 +4,26 @@ import Drawing from "../models/Drawing";
 import { hasParticipated } from "../utils/helpers";
 import { Req, SessionData } from "../types/sessionTypes";
 import { isValidPath } from "../types/drawing";
+import { z } from 'zod'
+import { getFirstZodError } from "../utils/validator";
+
+
+const validateModifyDraw = z.object({
+    start: z.number().min(0, "Start doit être >= 0"),
+    end: z.number().min(0, "End doit être >= 0"),
+    paths: z.unknown()
+}).refine((data) => data.end > data.start, {
+    message: "End doit être superieur à start",
+    path: ["end"]
+}).superRefine((data, ctx) => {
+    if (!isValidPath(data.paths)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Path invalid",
+            path: ["paths"]
+        });
+    }
+})
 
 export const isPartyOn = () => {
     return async (
@@ -51,30 +71,19 @@ export const isPartyOn = () => {
 }
 
 export const validateDrawPost = () => {
-    return async (
+    return (
         req: Request,
         res: Response,
         next: NextFunction
-    ) : Promise<void> => {
+    ) : void => {
+        const parsed = validateModifyDraw.safeParse(req.body);
 
-        const newPaths = req.body.paths;
-        const start = req.body.start;
-        const end = req.body.end;
-            
-        if (typeof start !== 'number' || start < 0){
-            sendError(res, 'start index invalid', 400);
+        if (!parsed.success) {
+            sendError(res, getFirstZodError(parsed.error), 400);
             return;
         }
-        
-        if (typeof end !== 'number' || end < 0){
-            sendError(res, 'end index invalid', 400);
-            return;
-        }
-        
-        if (!isValidPath(newPaths)){
-            sendError(res, 'Path invalid', 400);
-            return;
-        }
+
+        req.body = parsed.data;
         next();
     }
 }

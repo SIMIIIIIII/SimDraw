@@ -59,37 +59,16 @@ export const likeDrawing = async (
 ) : Promise<void> => {
     try {
         const drawing = await Drawing.findById(req.params.id);
-        let message : string;
         
-
-        const hasLiked = drawing?.whoLiked.filter((id) => id.toString().includes((req.session as SessionData).user?.id.toString()!))
-
-        if (hasLiked?.length === 0) {
-            await Drawing.findByIdAndUpdate(
-                req.params.id,
-                {
-                    likes: drawing?.likes! + 1,
-                    $push: {
-                        whoLiked: (req.session as SessionData).user?.id!
-                    }
-                }
-            );
-            message = 'Dessin liké'
-            sendSuccessWithData(res, message, 200, 1);
+        if (!drawing) {
+            sendError(res, 'Drawing not found', 404);
+            return;
         }
+        
+        const delta = await drawing.toggleLike((req.session as SessionData).user?.id!);
+        const message = delta === 1 ? 'Dessin liké' : 'Like enlevé';
 
-        else {
-            await Drawing.findByIdAndUpdate(
-                req.params.id,
-                {
-                    whoLiked: drawing?.whoLiked.filter((x) => x !== (req.session as SessionData).user?.id!),
-                    likes: drawing?.likes! - 1
-                }
-            );
-            
-            message = 'Like enlevé'
-            sendSuccessWithData(res, message, 200, -1);
-        }
+        sendSuccessWithData(res, message, 200, delta);
         
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';

@@ -76,5 +76,10 @@ export interface IDrawing {
     formattedParticipants?: formattedParticipants[]
 }
 
+export interface IDrawingMethods {
+    hasLiked(userId: Types.ObjectId): boolean;
+    toggleLike(userId: Types.ObjectId): Promise<number>;
+}
+
 export type DrawingResponse = ApiResponseWithData<IDrawing>;
 export type DrawingsListResponse = ApiResponseWithData<IDrawing[]>

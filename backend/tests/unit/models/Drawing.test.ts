@@ -554,5 +554,193 @@ describe("Drawings models", () => {
 
     })
 
+    describe('Instance Methods - toggleLike & hasLiked', () => {
+        let testDrawing: any;
+        const userId1 = new (require('mongoose').Types.ObjectId)();
+        const userId2 = new (require('mongoose').Types.ObjectId)();
+
+        beforeEach(async () => {
+            testDrawing = await Drawing.create({
+                title: 'Drawing for Like Test',
+                theme: 'Test Theme',
+                author: {
+                    authorId: new (require('mongoose').Types.ObjectId)(),
+                    username: 'testuser123',
+                    emoji: '1f600'
+                },
+                maxParticipants: 2,
+                isPublic: true
+            });
+        });
+
+        it('hasLiked() should return false when user has not liked', () => {
+            const hasLiked = testDrawing.hasLiked(userId1);
+            expect(hasLiked).toBe(false);
+        });
+
+        it('hasLiked() should return true when user has liked', async () => {
+            testDrawing.whoLiked.push(userId1);
+            await testDrawing.save();
+
+            const hasLiked = testDrawing.hasLiked(userId1);
+            expect(hasLiked).toBe(true);
+        });
+
+        it('toggleLike() should add a like and return +1 when not liked yet', async () => {
+            const delta = await testDrawing.toggleLike(userId1);
+
+            expect(delta).toBe(1);
+            expect(testDrawing.likes).toBe(1);
+            expect(testDrawing.hasLiked(userId1)).toBe(true);
+        });
+
+        it('toggleLike() should remove a like and return -1 when already liked', async () => {
+            await testDrawing.toggleLike(userId1);
+            const delta = await testDrawing.toggleLike(userId1);
+
+            expect(delta).toBe(-1);
+            expect(testDrawing.likes).toBe(0);
+            expect(testDrawing.hasLiked(userId1)).toBe(false);
+        });
+
+        it('toggleLike() should handle multiple users independently', async () => {
+            const delta1 = await testDrawing.toggleLike(userId1);
+            expect(delta1).toBe(1);
+            expect(testDrawing.likes).toBe(1);
+            
+            const delta2 = await testDrawing.toggleLike(userId2);
+            expect(delta2).toBe(1);
+            expect(testDrawing.likes).toBe(2);
+            
+            const delta3 = await testDrawing.toggleLike(userId1);
+            expect(delta3).toBe(-1);
+            expect(testDrawing.likes).toBe(1);
+            
+            expect(testDrawing.hasLiked(userId2)).toBe(true);
+            expect(testDrawing.hasLiked(userId1)).toBe(false);
+        });
+
+        it('toggleLike() should never go below 0 likes', async () => {
+            const delta1 = await testDrawing.toggleLike(userId1);
+            expect(delta1).toBe(1);
+
+            await testDrawing.toggleLike(userId1);
+            await testDrawing.toggleLike(userId1);
+            
+            expect(testDrawing.likes).toBeGreaterThanOrEqual(0);
+        });
+    });
+
+    describe('Static Methods - findPublicCompleted', () => {
+        let publicDoneDrawing: any;
+        let publicInProgressDrawing: any;
+        let privateDrawing: any;
+        const testUserId = new (require('mongoose').Types.ObjectId)();
+
+        beforeEach(async () => {
+            publicDoneDrawing = await Drawing.create({
+                title: 'Public Done Drawing for Static Test',
+                theme: 'Nature',
+                author: {
+                    authorId: testUserId,
+                    username: 'testuser456',
+                    emoji: '1f600'
+                },
+                isPublic: true,
+                isDone: true
+            });
+            
+            publicInProgressDrawing = await Drawing.create({
+                title: 'Public In Progress for Static Test',
+                theme: 'Art',
+                author: {
+                    authorId: testUserId,
+                    username: 'testuser789',
+                    emoji: '1f603'
+                },
+                isPublic: true,
+                isDone: false,
+                maxParticipants: 2,
+                participants: [
+                    {
+                        userId: testUserId,
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        userId: new (require('mongoose').Types.ObjectId)(),
+                        start: 100,
+                        end: 200
+                    }
+                ]
+            });
+            
+            privateDrawing = await Drawing.create({
+                title: 'Private Drawing for Static Test',
+                theme: 'Abstract',
+                author: {
+                    authorId: testUserId,
+                    username: 'testuser999',
+                    emoji: '1f604'
+                },
+                isPublic: false,
+                isDone: true
+            });
+        });
+
+        it('findPublicCompleted() should return only public drawings that are done or fully participated', async () => {
+            const drawings = await Drawing.findPublicCompleted();
+            
+            const hasDone = drawings.some(d => d._id.toString() === publicDoneDrawing._id.toString());
+            expect(hasDone).toBe(true);
+            
+            const hasFull = drawings.some(d => d._id.toString() === publicInProgressDrawing._id.toString());
+            expect(hasFull).toBe(true);
+            
+            expect(drawings.every(d => d.isPublic)).toBe(true);
+            
+            drawings.forEach(drawing => {
+                const isFull = drawing.participants.length >= (drawing.maxParticipants || 1);
+                expect(drawing.isDone || isFull).toBe(true);
+            });
+        });
+
+        it('findPublicCompleted() should not return private drawings', async () => {
+            const drawings = await Drawing.findPublicCompleted();
+
+            const hasPrivate = drawings.some(d => d._id.toString() === privateDrawing._id.toString());
+            expect(hasPrivate).toBe(false);
+        });
+
+        it('findPublicCompleted() should not return public but not completed drawings', async () => {
+            const publicIncomplete = await Drawing.create({
+                title: 'Public Incomplete for Static Test',
+                theme: 'Music',
+                author: {
+                    authorId: testUserId,
+                    username: 'testuser111',
+                    emoji: '1f605'
+                },
+                isPublic: true,
+                isDone: false,
+                maxParticipants: 3,
+                participants: [
+                    {
+                        userId: testUserId,
+                        start: 0,
+                        end: 100
+                    }
+                ]
+            });
+
+            const drawings = await Drawing.findPublicCompleted();
+
+            const hasIncomplete = drawings.some(d => d._id.toString() === publicIncomplete._id.toString());
+            expect(hasIncomplete).toBe(false);
+            
+            await Drawing.deleteOne({ _id: publicIncomplete._id });
+        });
+    });
+
     
 })

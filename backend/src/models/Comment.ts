@@ -42,7 +42,8 @@ const CommentSchema : Schema = new Schema({
         default: false
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    select: false
 }
 )
 

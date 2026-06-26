@@ -3,26 +3,14 @@ import Drawing from "../models/Drawing";
 import { setCanModify, sortByUpdatedAt } from "../utils/drawingHelpers";
 import { sendSuccessWithData, sendError } from "../middlewares/apiResponse";
 import { SessionData, Req } from '../types/sessionTypes'
+import { Types } from "mongoose";
 
 export const home = async (
     req: Request,
     res: Response
 ) : Promise<void> => {
     try {
-        const drawings = await Drawing.find({
-            isPublic: true,
-            $or: [
-                { isDone: true },
-                {
-                    $expr: {
-                        $gte: [
-                            { $size: { $ifNull: ['$participants', []] } },
-                            { $ifNull: ['$maxParticipants', 1] }
-                        ]
-                    }
-                }
-            ]
-        });
+        const drawings = await Drawing.findPublicCompleted();
         sortByUpdatedAt(drawings);
         
         if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
@@ -38,24 +26,16 @@ export const byAuthor = async (
     res: Response
 ) : Promise<void> => {
     try {
-        const id = req.params.id;
-        const drawings = await Drawing.find({
-            author: {
-                authorId: id
-            },
-            isPublic: true,
-            $or: [
-                { isDone: true },
-                {
-                    $expr: {
-                        $gte: [
-                            { $size: { $ifNull: ['$participants', []] } },
-                            { $ifNull: ['$maxParticipants', 1] }
-                        ]
-                    }
-                }
-            ]
-        }) 
+        const id = (req.params.id as string);
+
+        if (!Types.ObjectId.isValid(id)) {
+            sendError(res, 'Auteur invalide', 400);
+            return;
+        }
+
+        const authorId = new Types.ObjectId(id);
+
+        const drawings = await Drawing.findPublicCompleted({ author: authorId })
         sortByUpdatedAt(drawings);
 
         if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
@@ -72,22 +52,7 @@ export const byTheme = async (
     res: Response
 ) : Promise<void> => {
     try {
-        const theme = req.params.theme;
-        const drawings = await Drawing.find({
-            isPublic: true,
-            theme: (typeof theme ==='string' ? theme : null),
-            $or: [
-                { isDone: true },
-                {
-                    $expr: {
-                        $gte: [
-                            { $size: { $ifNull: ['$participants', []] } },
-                            { $ifNull: ['$maxParticipants', 1] }
-                        ]
-                    }
-                }
-            ]
-        }) 
+        const drawings = await Drawing.findPublicCompleted({ theme: req.params.theme as string })
         sortByUpdatedAt(drawings);
 
         if ((req as Req).isAuthenticated) setCanModify(drawings, (req.session as SessionData).user?.id);
@@ -103,11 +68,14 @@ export const my_drawings = async (
     res: Response
 ) : Promise<void> => {
     try {
-        const drawings = await Drawing.find({
-            author: {
-                authorId: (req.session as SessionData).user?.id
-            }
-        });
+        const userId = (req.session as SessionData).user?.id;
+
+        if (!userId) {
+            sendError(res, 'Utilisateur non authentifie', 401);
+            return;
+        }
+
+        const drawings = await Drawing.where('author.authorId').equals(userId);
 
         drawings.sort((x, y) => {
             if (!x.isDone) return -1;

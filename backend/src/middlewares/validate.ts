@@ -1,9 +1,30 @@
 import { sendError } from "../middlewares/apiResponse";
 import Drawing from "../models/Drawing";
-import { checkEmail, checkPassword, checkUsername } from "../utils/validator";
 import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose";
 import { Req } from "../types/sessionTypes";
+import { z } from 'zod'
+import { getFirstZodError } from "../utils/validator";
+
+
+export const validateCreateUser = z.object({
+    email: z.string().trim().email('Format email invalide'),
+    username: z.string()
+        .trim()
+        .min(6, 'Username trop court, min 6 caractère')
+        .max(20, 'Username trop long')
+        .refine((value) => !value.includes(' '), 'Username ne doit pas contenir d\'espace'),
+    password: z.string()
+        .trim()
+        .min(8, 'Mot de passe trop court, min 8 caractères')
+        .max(32, 'Mot de passe trop long, max 32 caractères')
+        .regex(/[A-Z]/, 'Le mot de passe doit contenir au moins 1 majuscule')
+        .regex(/[a-z]/, 'Le mot de passe doit contenir au moins 1 minuscule')
+        .regex(/[0-9]/, 'Le mot de passe doit contenir au moins 1 chiffre')
+        .regex(/[^A-Za-z0-9]/, 'Le mot de passe doit contenir au moins 1 caractère spécial'),
+    name: z.string().trim().min(1, 'Name is required')
+})
+
 
 export const validateObjectId = (paramName: string) => {
     return (
@@ -48,50 +69,14 @@ export const validateSubscriptionPost = () => {
         next: NextFunction
     ) : void => {
 
-        const email : string = req.body.email || null;
-        const username : string = req.body.username || null;
-        const password : string = req.body.password || null;
-        const name : string = req.body.name || null;
+        const parsed = validateCreateUser.safeParse(req.body);
 
-        if (!email || email.trim().length === 0 || !checkEmail(email)) {
-            sendError(res, 'Invalid email format', 400);
-            return
-        }
-        if (!username || username.trim().length === 0 || !checkUsername(username)) {
-            sendError(res, 'Invalid username format', 400);
-            return
-        }
-        if (!password || password.trim().length === 0 || !checkPassword(password)) {
-            sendError(res, 'Invalid password format', 400);
-            return
-        }
-        if (!name || name.trim().length === 0) {
-            sendError(res, 'Name is required', 400);
-            return
-        }
-        next();
-    }
-}
-
-export const validateConnexionPost = () => {
-    return (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) : void => {
-        
-        const username : string = req.body.username || null;
-        const password : string = req.body.password || null;
-        
-        if (!username || username.trim().length === 0 || !checkUsername(username)) {
-            sendError(res, 'Invalid username format', 400);
-            return
-        }
-        if (!password || password.trim().length === 0 || !checkPassword(password)) {
-            sendError(res, 'Invalid password format', 400);
+        if (!parsed.success) {
+            sendError(res, getFirstZodError(parsed.error), 400);
             return
         }
 
+        req.body = parsed.data;
         next();
     }
 }

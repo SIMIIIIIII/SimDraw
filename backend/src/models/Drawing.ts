@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document, Types } from 'mongoose'
-import { IDrawing } from '../types/drawing'
+import mongoose, { Schema, Document, Types, Model } from 'mongoose'
+import { IDrawing, IDrawingMethods } from '../types/drawing'
 
 
-const DrawingSchema : Schema = new Schema ({
+const DrawingSchema = new Schema<IDrawingDocument, IDrawingModel> ({
     title: {
         type: String,
         required: true,
@@ -170,6 +170,66 @@ const DrawingSchema : Schema = new Schema ({
     timestamps: true
 })
 
-export interface IDrawingDocument extends IDrawing, Document {}
-export default mongoose.model<IDrawingDocument>('Drawing', DrawingSchema)
+DrawingSchema.methods.hasLiked = function (userId: Types.ObjectId): boolean {
+    return this.whoLiked.some((id: Types.ObjectId) => id.toString() === userId.toString());
+};
 
+DrawingSchema.methods.toggleLike = async function (userId: Types.ObjectId): Promise<number> {
+    if (this.hasLiked(userId)) {
+        this.whoLiked = this.whoLiked.filter((id: Types.ObjectId) => id.toString() !== userId.toString());
+        this.likes = Math.max(0, this.likes - 1);
+        await this.save();
+        return -1;
+    }
+    
+    this.whoLiked.push(userId);
+    this.likes += 1;
+    await this.save();
+    return 1;
+};
+
+
+type FindPublicCompletedOptions = {
+    author?: Types.ObjectId;
+    theme?: string;
+    isPublic?: boolean;
+    isDone?: boolean
+};
+
+DrawingSchema.statics.findPublicCompleted = function (options: FindPublicCompletedOptions | null = {}) {
+    const normalizedOptions = options ?? {};
+    const filter: {
+        isPublic: boolean;
+        $or: object[];
+        'author.authorId'?: Types.ObjectId;
+        theme?: string;
+        isDone?: boolean
+    } = {
+        isPublic: true,
+        $or: [
+            { isDone: true },
+            {
+                $expr: {
+                    $gte: [
+                        { $size: { $ifNull: ['$participants', []] } },
+                        { $ifNull: ['$maxParticipants', 2] }
+                    ]
+                }
+            }
+        ]
+    };
+
+    if (normalizedOptions.author) filter['author.authorId'] = normalizedOptions.author;
+    if (normalizedOptions.theme) filter.theme = normalizedOptions.theme;
+    if (normalizedOptions.isPublic) filter.isPublic = normalizedOptions.isPublic
+    if (normalizedOptions.isDone) filter.isDone = normalizedOptions.isDone
+
+    return this.find(filter);
+};
+
+interface IDrawingModel extends Model<IDrawingDocument> {
+    findPublicCompleted(options?: FindPublicCompletedOptions | null): Promise<IDrawingDocument[]>;
+}
+
+export interface IDrawingDocument extends IDrawing, IDrawingMethods, Document {}
+export default mongoose.model<IDrawingDocument, IDrawingModel>('Drawing', DrawingSchema)

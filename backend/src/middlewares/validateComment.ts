@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import Comment from "../models/Comment";
 import { SessionData } from "../types/sessionTypes";
 
+
 export const validateCommentPost = () => {
     return async (
         req: Request,

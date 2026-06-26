@@ -7,7 +7,7 @@ import { validateSubscriptionPost } from '../../../src/middlewares/validate'
 
 vi.mock('../../../src/models/User');
 vi.mock('../../../src/middlewares/apiResponse');
-vi.mock('../../../src/utils/validator');
+//vi.mock('../../../src/utils/validator');
 
 
 describe('Subscription Route', () => {
@@ -81,107 +81,116 @@ describe('Subscription Route', () => {
 
         it('Pas de champs email', async() => {
             req = {body: {username: "simiii", password: "#Thesim25", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid email format', 400)
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Invalid input: expected string, received undefined", 400)
             expect(next).not.toHaveBeenCalled();
         })
 
         it('email invalid', async() => {
             req = {body: {username: "simiii", password: "#Thesim25", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(false);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid email format', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Format email invalide", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
         it('pas des champs username', async() => {
-            req = {body: {password: "#Thesim25", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+            req = {body: {password: "#Thesim25", email: "sim@gmail.be", name:'sim'}};
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid username format', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Invalid input: expected string, received undefined", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
         it('username invalid', async() => {
-            req = {body: {username: "simiii", password: "#Thesim25", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(false);
+            req = {body: {username: "simii", password: "#Thesim25", email: "sim@gmail.be", name:'sim'}};
+            
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid username format', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Username trop court, min 6 caractère", 400);
+            expect(next).not.toHaveBeenCalled();
+        })
+
+        it('username invalid avec espace', async() => {
+            req = {body: {username: "si mii", password: "#Thesim25", email: "sim@gmail.be", name:'sim'}};
+            
+            await validateSubscriptionPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalled();
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Username ne doit pas contenir d'espace", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
         it('pas des champs password', async() => {
-            req = {body: {username: "simiii", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+            req = {body: {username: "simiii", email: "sim@gmail.be", name:'sim'}};
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid password format', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Invalid input: expected string, received undefined", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
-        it('password invalid', async() => {
-            req = {body: {username: "simiii", password: "#Thesim25", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(false);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+        it('password invalid sans caractere special', async() => {
+            req = {body: {username: "simiii", password: "Thesim25", email: "sim@gmail.be", name:'sim'}};
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Invalid password format', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Le mot de passe doit contenir au moins 1 caractère spécial", 400);
+            expect(next).not.toHaveBeenCalled();
+        })
+
+        it('password invalid sans majuscule', async() => {
+            req = {body: {username: "simiii", password: "#thesim25", email: "sim@gmail.be", name:'sim'}};
+            await validateSubscriptionPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalled();
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Le mot de passe doit contenir au moins 1 majuscule", 400);
+            expect(next).not.toHaveBeenCalled();
+        })
+
+        it('password invalid sans chiffre', async() => {
+            req = {body: {username: "simiii", password: "#Thesimm", email: "sim@gmail.be", name:'sim'}};
+            await validateSubscriptionPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalled();
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Le mot de passe doit contenir au moins 1 chiffre", 400);
+            expect(next).not.toHaveBeenCalled();
+        })
+
+        it('password invalid sans miniscule', async() => {
+            req = {body: {username: "simiii", password: "#THESIM25", email: "sim@gmail.be", name:'sim'}};
+            await validateSubscriptionPost()(req, res, next);
+
+            expect(apiResponse.sendError).toHaveBeenCalled();
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Le mot de passe doit contenir au moins 1 minuscule", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
         it('pas de champs name', async() => {
-            req = {body: {username: "simiii", password: "#Thesim25", email: "sim"}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+            req = {body: {username: "simiii", password: "#Thesim25", email: "sim@gmail.be"}};
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Name is required', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Invalid input: expected string, received undefined", 400);
             expect(next).not.toHaveBeenCalled();
         })
 
-        it('pas de champs name', async() => {
-            req = {body: {username: "simiii", password: "#Thesim25", email: "sim", name: ""}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+        it('champs name contenant que des espaces', async() => {
+            req = {body: {username: "simiii", password: "#Thesim25", email: "sim@gmail.be", name: "    "}};
             await validateSubscriptionPost()(req, res, next);
 
             expect(apiResponse.sendError).toHaveBeenCalled();
-            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, 'Name is required', 400);
+            expect(apiResponse.sendError).toHaveBeenLastCalledWith(res, "Name is required", 400);
             expect(next).not.toHaveBeenCalled();
         })
-        
-
 
         it('Tout les champ valides', async() => {
-            req = {body: {username: "simiii", password: "#Thesim25", email: "sim", name:'sim'}};
-            vi.mocked(validators.checkEmail).mockReturnValue(true);
-            vi.mocked(validators.checkPassword).mockReturnValue(true);
-            vi.mocked(validators.checkUsername).mockReturnValue(true);
+            req = {body: {username: "simiii", password: "#Thesim25", email: "sim@gmail.be", name:'sim'}};
             await validateSubscriptionPost()(req, res, next);
             
             expect(apiResponse.sendError).not.toHaveBeenCalled();

@@ -1,4 +1,5 @@
 import validator from 'validator';
+import { z } from 'zod'
 
 export const checkEmail = (email: string): boolean => {
     return validator.isEmail(email);
@@ -20,3 +21,9 @@ export const checkPassword = (password: string): boolean => {
         minSymbols: 1,
     });
 };
+
+export const getFirstZodError = (error: z.ZodError): string => {
+    const first = error.issues[0];
+    if (!first) return "Données invalides";
+    return first.message;
+}

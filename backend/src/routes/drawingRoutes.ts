@@ -1,6 +1,6 @@
 import { createDrawing, deleteDrawing, getDrawing, likeDrawing, modifyDrawing } from '../controllers/drawingController';
 import { checkAuth, isAuthenticated } from '../middlewares/auth';
-import { drawingBelongTo, validateDrawingId, validateDrawingPost } from '../middlewares/validateDrawing';
+import { drawingBelongTo, validateCreateDrawingPost, validateDrawingId, validateModifyDrawingPost } from '../middlewares/validateDrawing';
 import express from 'express'
 
 const router = express.Router()
@@ -8,7 +8,7 @@ const router = express.Router()
 router.post(
     '/',
     isAuthenticated,
-    validateDrawingPost(),
+    validateCreateDrawingPost(),
     createDrawing
 )
 
@@ -37,7 +37,7 @@ router.put(
     '/:id',
     isAuthenticated,
     validateDrawingId(),
-    validateDrawingPost(),
+    validateModifyDrawingPost(),
     modifyDrawing
 )
 

@@ -3,26 +3,54 @@ import { sendError } from "./apiResponse";
 import { Types } from "mongoose";
 import Drawing from "../models/Drawing";
 import { SessionData } from "../types/sessionTypes";
+import { z } from 'zod'
+import { getFirstZodError } from "../utils/validator";
 
-export const validateDrawingPost = () => {
-    return async (
+
+export const createDrawingSchema = z.object({
+        title: z.string().trim().min(1, "Titre vide").max(120, "Titre trop long"),
+        theme: z.string().trim().min(1, "Theme vide").max(60, "Theme trop long"),
+        description: z.string().trim().min(1, "Description Vide").max(2000, "Description trop long"),
+        maxParticipants: z.coerce.number().int().min(2, "min 2 participant").max(8, "max 8 participants").default(2),
+    }
+)
+
+export const updateDrawingSchema = z.object({
+    title: z.string().trim().min(1, "Titre vide").max(120, "Titre trop long"),
+    description: z.string().trim().min(1, "Description Vide").max(2000, "Description trop long"),
+});
+
+
+export const validateCreateDrawingPost = () => {
+    return (
         req: Request,
         res: Response,
         next: NextFunction
-    ) : Promise<void> => {
-        const title : string = req.body.title;
-        const description : string = req.body.description;
-
-        if (!title || title.trim().length === 0){
-            sendError(res, 'Empty title', 400);
+    ): void => {
+        const parsed = createDrawingSchema.safeParse(req.body);
+        if (!parsed.success) {
+            sendError(res, getFirstZodError(parsed.error), 400);
             return;
         }
+    
+        req.body = parsed.data;
+        next();
+    }
+}
 
-        if (!description || description.trim().length === 0){
-            sendError(res, 'Empty description', 400);
-            return;
+export const validateModifyDrawingPost = () => {
+    return (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) : void => {
+        const parsed = updateDrawingSchema.safeParse(req.body)
+        if (!parsed.success) {
+            sendError(res, getFirstZodError(parsed.error), 400)
+            return
         }
 
+        req.body = parsed.data;
         next();
     }
 }
@@ -32,37 +60,35 @@ export const validateDrawingId = () => {
         req: Request,
         res: Response,
         next: NextFunction
-    ) : Promise<void> => {
-        const drawingId : string = typeof req.params.id === 'string' ? req.params.id : ' ';
-        
-        if (!Types.ObjectId.isValid(drawingId)){
-            sendError(res, `${drawingId} is not an ObjectId`, 400);
-            return
+    ): Promise<void> => {
+        const drawingId: string = typeof req.params.id === "string" ? req.params.id : " ";
+        if (!Types.ObjectId.isValid(drawingId)) {
+            sendError(res, drawingId + " n'est pas un ObjectId", 400);
+            return;
         }
-        
+
         try {
             const drawing = await Drawing.findById(drawingId);
-            if (!drawing){
-                sendError(res, 'drawing do not exist', 404);
-                return
+            if (!drawing) {
+                sendError(res, "drawing do not exist", 404);
+                return;
             }
 
             const participantCount = drawing.participants?.length || 0;
             const maxParticipants = drawing.maxParticipants || 1;
-            const isLegacyCompleted = participantCount >= maxParticipants;
+            const isDrawingCompleted = participantCount >= maxParticipants;
 
-            if (!drawing.isPublic || (!drawing.isDone && !isLegacyCompleted)){
-                sendError(res, 'Drawing not public', 403);
+            if (!drawing.isPublic || (!drawing.isDone && !isDrawingCompleted)) {
+                sendError(res, "Drawing not public", 403);
                 return;
             }
 
             next();
-        
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Erreur inconnue';
+            const message = error instanceof Error ? error.message : "Erreur inconnue";
             sendError(res, message, 500);
         }
-    }
+    };
 }
 
 export const drawingBelongTo = () => {
@@ -70,24 +96,25 @@ export const drawingBelongTo = () => {
         req: Request,
         res: Response,
         next: NextFunction
-    ) : Promise<void> => {
-
+    ): Promise<void> => {
         try {
             const drawing = await Drawing.findById(req.params.id);
-            if (!drawing){
-                sendError(res, 'drawing do not exist', 404);
-                return
-            }
-            
-            if (!drawing?.author.authorId.equals((req.session as SessionData).user?.id) && !(req.session as SessionData).user!.admin){
-                sendError(res, 'Not allowed', 403);
+            if (!drawing) {
+                sendError(res, "Le dessin n'existe pas", 404);
                 return;
             }
-            
+
+            if (
+                !drawing.author.authorId.equals((req.session as SessionData).user?.id) &&
+                !(req.session as SessionData).user!.admin) {
+                    sendError(res, "Not allowed", 403);
+                    return;
+                }
+
             next();
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Erreur inconnue';
+            const message = error instanceof Error ? error.message : "Erreur inconnue";
             sendError(res, message, 500);
         }
-    }
+    };
 }

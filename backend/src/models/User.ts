@@ -51,7 +51,8 @@ const UserSchema: Schema = new Schema({
         default: '1f600'
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    select: false
 });
 
 export default mongoose.model<IUserDocument>('User', UserSchema);
