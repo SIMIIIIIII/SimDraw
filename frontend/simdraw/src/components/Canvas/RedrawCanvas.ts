@@ -20,6 +20,7 @@ const RedrawCanvas = (
       ctx.lineTo(path.points[i].x, path.points[i].y);
     }
     ctx.stroke();
+    ctx.beginPath();
   });
 };
 

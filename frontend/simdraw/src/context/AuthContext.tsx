@@ -1,9 +1,7 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useState} from 'react';
+// filepath: /home/sim/Documents/SINF1BA/SIM/SIMEON/public/SimDraw/frontend/simdraw/src/context/AuthContext.tsx
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react'
 import type { IUser, IAuthContext } from '../types/user';
-
-
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
@@ -13,13 +11,22 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<IUser | null>(null);
- 
+  
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const login = (userData: IUser) : void => {
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () : void => {
     setUser(null);
+    localStorage.removeItem('user');
   };
 
   return (

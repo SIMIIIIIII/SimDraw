@@ -1,0 +1,58 @@
+table table {
+  width: 50%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-radius: 0.7rem;
+  text-align: left;
+  display: flex;
+}
+
+table table thead {
+  background-color: rgb(240, 168, 34);
+  font-weight: bold;
+}
+
+table table th {
+  padding: 12px;
+  border: 1px solid black;
+}
+
+table table td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+}
+
+table table td:last-child {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  
+}
+
+table td {
+  vertical-align: top;
+}
+
+.titre{
+  text-align: center;
+}
+
+.emoji {
+  font-size: 30px;
+}
+
+
+.user-info-root {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.user-info-table {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}

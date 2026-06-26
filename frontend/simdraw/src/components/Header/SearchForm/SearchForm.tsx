@@ -18,18 +18,16 @@ export const SearchForm = ({
 
     const onSearch = (e: React.FormEvent<HTMLFormElement>) : void => {
         e.preventDefault();
-    
         const form = e.currentTarget;
-        const searchTerm : string = (form.elements.namedItem('recherche') as HTMLInputElement).value;
-    
-        navigate(`/?search=${encodeURIComponent(searchTerm)}`);
-        window.location.reload();
+        
+        const searchTerm : string = (form.elements.namedItem('search') as HTMLInputElement).value;
+        navigate(`/search?search=${encodeURIComponent(searchTerm)}`);
       };
 
     return (
         <div className="formulaire">
             <form className="form-control" onSubmit={onSearch}>
-                <label htmlFor="search"><h2>Recherche</h2></label>
+                <label htmlFor="search" hidden={true}><h2>Recherche</h2></label>
                 <input
                     type="search"
                     placeholder="Champs de recherche"
@@ -43,5 +41,4 @@ export const SearchForm = ({
             </form>
           </div>
     )
-
 }

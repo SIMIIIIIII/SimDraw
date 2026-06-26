@@ -14,12 +14,12 @@ export const DrawingsInfo = ({drawing} : {drawing : IDrawing}) => {
                         </Link>
                         <h5>
                             par:{' '}
-                            <a href={`/?author=${drawing.author.authorId}`}>
+                            <a href={`/by/?author=${drawing.author.authorId}`}>
                                 {drawing.author.username || 'Inconnu.e'}
                             </a>
                         </h5>
                         <h5>
-                            <a href={`/?theme=${drawing.theme}`}>#{drawing.theme}</a>
+                            <a href={`/by/?theme=${drawing.theme}`}>#{drawing.theme}</a>
                         </h5>
                     </td>
                     <td>

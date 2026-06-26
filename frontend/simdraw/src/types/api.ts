@@ -1,16 +1,8 @@
 // Réponse de base
-export interface ApiResponse {
+export interface ApiResponse<T> {
   success: boolean;
-  message: string;
-}
-
-// Réponse avec données
-export interface ApiResponseWithData<T> extends ApiResponse {
-  data: T;
-}
-
-// Réponse d'erreur
-export interface ApiError extends ApiResponse {
-  success: false;
+  message?: string;
   error?: string;
+  data?: T;
+
 }

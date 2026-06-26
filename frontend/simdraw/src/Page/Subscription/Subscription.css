@@ -1,0 +1,22 @@
+.subscription-page {
+  padding: 15px;
+  padding-right: 20px;
+  border: 5px solid black;
+  border-top: 0px;
+}
+
+.subscription-page .small-box {
+    border: 2px solid #333;
+    background-color: rgb(223, 222, 222);
+    padding: 10px;
+    resize: none;
+    width: 850px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    text-align: center;
+}
+
+.subscription-page .error {
+  color: red;
+}

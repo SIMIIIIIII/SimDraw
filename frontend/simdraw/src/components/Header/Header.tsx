@@ -1,14 +1,14 @@
 import './Header.css'
 
 import { Link, useNavigate, type NavigateFunction } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import Logo from '../../images/logo.png';
 import React from 'react';
 import { SearchForm } from './SearchForm/SearchForm';
 import { UserStatus } from './UserStatus/UserStatus';
+import type { IUser } from '../../types/user';
 
-const Header: React.FC = () => {
-  const { user } = useAuth();
+const Header = ( {user} : {user: IUser | null}) => {
+  
   const navigate : NavigateFunction = useNavigate();
 
   const onHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) : void => {

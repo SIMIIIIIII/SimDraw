@@ -1,0 +1,94 @@
+.create {
+    padding:15px;
+    padding-right: 20px;
+    border: 5px solid black;
+    border-top: 0px;
+}
+
+.create .small-box {
+  border: 2px solid #333;
+  background-color: rgb(223, 222, 222);
+  padding: 10px;
+  resize: none;
+  width: 850px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px auto;
+}
+
+.create table {
+    width: 700px;
+    align-content:first baseline;
+    text-decoration: solid;
+    padding-left: 10px;
+}
+
+.create table td:first-child {
+    width: 30%;
+}
+
+.create table td:last-child {
+    width: 70%;
+}
+
+.create table input[type="text"],
+.create table textarea {
+    width: 100%;
+}
+
+.create table tbody tr td{
+    padding-bottom: 5px;
+}
+
+.create textarea{
+    height: 80px;
+    padding: 3px 7px;
+    font-size: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    resize: none;
+}
+
+.create .error {
+    color: red;
+    text-align: center;
+}
+ 
+.create input[type="text"] {
+    width: 30%;
+    height: 40px;
+    padding: 3px 7px;
+    font-size: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+ 
+.create input[type="number"] {
+    width: 30%;
+    height: 40px;
+    padding: 3px 7px;
+    font-size: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.create h2 {
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+.create input[type="submit"]{
+    height: 40px;
+    width: 200px;
+    font-size: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: rgb(240, 168, 34);
+    cursor: pointer;
+}
+
+.create input[type="submit"]:hover{
+    background-color: black;
+    color: rgb(240, 168, 34);
+}

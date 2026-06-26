@@ -1,0 +1,40 @@
+.emoji {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Espace entre les éléments */
+}
+
+.emoji h6 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emoji h6 .epr-emoji {
+  display: inline-block !important;
+  vertical-align: middle;
+}
+
+.EmojiPickerReact {
+  overflow: hidden !important; /* Empêche le débordement */
+  box-sizing: border-box !important;
+}
+
+.EmojiPickerReact .epr-body {
+  overflow-y: auto !important; /* Scroll interne */
+  box-sizing: border-box !important;
+}
+
+.EmojiPickerReact .epr-search-container {
+  box-sizing: border-box !important;
+}
+
+.EmojiPickerReact .epr-skin-tones {
+  box-sizing: border-box !important;
+}
+
+.EmojiPickerReact .epr-emoji-category-label {
+  box-sizing: border-box !important;
+}

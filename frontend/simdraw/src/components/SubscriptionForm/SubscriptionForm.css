@@ -1,0 +1,81 @@
+.subscription-form table {
+  width: auto;
+  border: 2px solid #333;
+  text-align: left;
+  padding: 10px;
+  margin: 0 auto 20px auto;
+}
+
+.subscription-form table tr td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: auto;
+  padding: 5px;
+}
+
+.subscription-form table tr td:first-child {
+  width: auto;
+}
+
+.subscription-form table tr td:last-child {
+  width: 300px;
+}
+
+.subscription-form table tr td input[type='text'] {
+  width: 30%;
+  height: 40px;
+  padding: 3px 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.subscription-form table tr td input[type='email'] {
+  width: 30%;
+  height: 40px;
+  padding: 3px 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.subscription-form table tr td input[type='password'] {
+  width: 30%;
+  height: 40px;
+  padding: 3px 7px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.subscription-form input[type='submit'] {
+  height: 40px;
+  padding: 0 20px;
+  font-size: 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.subscription-form input[type='submit']:hover {
+  background-color: rgb(70, 59, 230);
+  color: white;
+}
+
+.subscription-form input[type='submit']:disabled{
+  background-color: gray;
+}
+
+.subscription-form input[type='submit']:disabled:hover{
+  background-color: gray;
+}
+
+.inscription {
+  width: 15%;
+}
+

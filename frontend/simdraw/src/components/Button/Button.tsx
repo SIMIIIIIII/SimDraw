@@ -1,4 +1,4 @@
-import './button.css'
+import './Button.css'
 import React from 'react'; 
  
 export interface IButtonProps { 
@@ -13,8 +13,8 @@ export interface IButtonProps {
 
 export const Button: React.FC<IButtonProps> = ({ 
     children, 
-    variant = 'primary', 
-    size = 'md', 
+    //variant = 'primary', 
+    //size = 'md', 
     disabled = false, 
     loading = false, 
     onClick, 
@@ -43,8 +43,8 @@ export const Button: React.FC<IButtonProps> = ({
 */
     return ( 
         <button 
+        className="app-button"
         type={type}
-        className='submit-button'
         //className={classes}
         disabled={disabled || loading} 
         onClick={onClick} 

@@ -1,15 +1,13 @@
-button,
-.submit-button{
+.app-button {
     height: 40px;
     padding: 0 20px;
     font-size: 15px;
     border: 1px solid black;
     border-radius: 5px;
-    background: black;
+    background: rgb(190, 134, 29);
     cursor: pointer;
 }
 
-.submit-button,
-button:hover {
-    background-color: rgb(190, 134, 29);
+.app-button:hover {
+    background-color: rgb(70, 59, 230)
 }

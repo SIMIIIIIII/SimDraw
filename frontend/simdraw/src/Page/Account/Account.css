@@ -1,0 +1,19 @@
+.account-page {
+  padding: 15px;
+  padding-right: 20px;
+  border: 5px solid black;
+  border-top: 0px;
+}
+
+.account-page a {
+  font-size: 18px;
+  color: black;
+  padding-bottom: 15px;
+  flex: 1;
+}
+
+.account-page a:hover {
+  color: blue;
+  font-style: italic;
+  font-size: 20px;
+}

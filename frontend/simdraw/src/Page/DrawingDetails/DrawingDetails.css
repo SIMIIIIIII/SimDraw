@@ -1,0 +1,34 @@
+.drawing-detail-section {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.drawing-detail-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.drawing-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.drawing-comments {
+    flex: 0 0 400px;
+    position: sticky;
+    top: 20px;
+}
+
+@media (max-width: 1024px) {
+    .drawing-detail-container {
+        flex-direction: column;
+    }
+    
+    .drawing-comments {
+        flex: 1;
+        width: 100%;
+        position: static;
+    }
+}

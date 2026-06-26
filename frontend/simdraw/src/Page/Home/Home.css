@@ -1,0 +1,25 @@
+.home-page {
+  padding: 15px;
+  padding-right: 20px;
+  border: 5px solid black;
+  border-top: 0px;
+  background-color: rgb(168, 183, 196);
+}
+
+.home-page a {
+  font-size: 18px;
+  color: black;
+  padding-bottom: 15px;
+  flex: 1;
+}
+
+.home-page a:hover {
+  color: blue;
+  font-style: italic;
+  font-size: 20px;
+}
+
+.home-page ul {
+  list-style-type: none;
+  width: 100%;
+}

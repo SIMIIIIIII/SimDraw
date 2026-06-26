@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaThumbsUp, FaDownload, FaComment } from 'react-icons/fa';
 import type { IDrawing } from '../../types/drawing';
+import type { ApiResponse } from '../../types/api';
+import { API_URL } from '../../config';
 
 interface IReactionsProps {
     drawing: IDrawing,
@@ -12,19 +14,16 @@ const Reactions = ({ drawing, index } : IReactionsProps) => {
     const [likes, setLikes] = useState<number>(drawing.likes);
     
     const onLike = () => {
-        fetch(`/drawing/like/${drawing._id}`, {
+        fetch(`${API_URL}/drawing/like/${drawing._id}`, {
             credentials: 'include',
+            method:'PUT',
         })
         .then((response) => {
-            if (response.status === 401) {
-                window.location.href = '/account/login';
-                return;
-            }
-            else if (response.status === 205) setLikes(likes + 1);
-            else if (response.status === 204) setLikes(likes - 1);
-            else if (!response.ok){
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            return response.json();
+        })
+        .then((data : ApiResponse<number>) => {
+            if (data.success) setLikes(likes + data!.data!);
+            else alert(data.error);
         })
         .catch((error) => console.error('Error liking drawing:', error));
     };

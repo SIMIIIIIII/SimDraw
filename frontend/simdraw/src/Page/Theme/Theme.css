@@ -1,0 +1,143 @@
+.theme-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.txt-theme {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 30px 0;
+    min-height: 400px;
+}
+
+.theme-column {
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.scrollable-element {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.theme-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.theme-column li {
+    padding: 12px 15px;
+    margin: 8px 0;
+    background-color: white;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1em;
+}
+
+.theme-column li:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.theme-column li.selected-theme {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+    font-weight: 600;
+}
+
+.creation-theme {
+    display: block;
+    margin: 30px auto 20px;
+    padding: 12px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.creation-theme:hover {
+    background-color: #218838;
+}
+
+.theme-form {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.nb-joueurs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    font-size: 1.1em;
+}
+
+.nb-joueurs input {
+    width: 80px;
+    padding: 8px 12px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 1em;
+    text-align: center;
+}
+
+.nb-joueurs input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.commencer {
+    padding: 15px 40px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;
+}
+
+.commencer:hover {
+    background-color: #0056b3;
+}
+
+.commencer:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .theme-column {
+        width: 100%;
+    }
+}

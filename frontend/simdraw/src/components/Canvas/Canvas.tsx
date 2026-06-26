@@ -55,14 +55,16 @@ const Canvas = ({ drawingPath, index } : ICanvasProps) => {
     // Dessiner les paths du drawing
     if (drawingPath && drawingPath.length > 0) {
       RedrawCanvas(ctx, canvas, drawingPath);
-      setHasDrawn(true);
     }
+    setHasDrawn(true);
   }, [isVisible, drawingPath, hasDrawn]);
 
   return (
     <div ref={containerRef} className='bloc-canvas'>
       <canvas
         ref={canvasRef}
+        width="800"
+        height="500"
         id={`drawingCanvas-${index}`}
         title={`drawingCanvas-${index}`}
         className={hasDrawn ? 'visible' : 'hidden'}

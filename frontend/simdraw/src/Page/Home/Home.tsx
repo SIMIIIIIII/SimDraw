@@ -1,8 +1,9 @@
 import { ShowDrawings } from "../../components/ShowDrawings/ShowDrawings"
 import { useEffect, useState } from "react";
 import { API_URL } from "../../config";
+import './Home.css'
 
-import type { ApiError, ApiResponseWithData } from "../../types/api";
+import type { ApiResponse} from "../../types/api";
 import type { IDrawing } from "../../types/drawing";
 
 const Home = () => {
@@ -16,12 +17,9 @@ const Home = () => {
         .then((response) => {
             return response.json();
         })
-        .then((data: ApiResponseWithData<IDrawing[]>) => {
-            if (data.success) setDrawings(data.data);
-            else {
-                const error : ApiError = (data as any) as ApiError
-                alert(error.error);
-            }
+        .then((data: ApiResponse<IDrawing[]>) => {
+            if (data.success) setDrawings(data!.data!);
+            else alert(data.error);
             setLoading(false);
         })
         .catch((error) => {
@@ -31,7 +29,12 @@ const Home = () => {
     }, []);
 
     if (loading) return <div>Chargement des dessins...</div>;
-    return <ShowDrawings drawings={drawings}/>
+    return (
+        <section className="home-page">
+            <br/>
+            <ShowDrawings drawings={drawings}/>
+        </section>
+    )
 }
 
 export default Home;
