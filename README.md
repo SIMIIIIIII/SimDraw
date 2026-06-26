@@ -1,120 +1,135 @@
-# SimDraw (In progress)
+# SimDraw
 
-Application web de dessin collaboratif permettant à plusieurs utilisateurs de créer des dessins ensemble en temps réel.
+SimDraw est un projet fullstack de dessin collaboratif. L'application combine une API Express en TypeScript et un client React/Vite pour permettre la création de dessins, la participation à des tours de jeu, les commentaires, les likes et la gestion de compte.
 
-## 📋 Description
+## Vue d'ensemble
 
-SimDraw est une plateforme de dessin collaborative où les utilisateurs peuvent :
-- Créer et participer à des sessions de dessin en groupe
-- Dessiner à tour de rôle sur un canvas partagé
-- Commenter et liker les créations
-- Gérer leur profil avec un avatar emoji personnalisé
+Le projet est organisé en deux applications principales :
 
-## 🏗️ Architecture
+- `backend/` : API REST Express + TypeScript + MongoDB/Mongoose
+- `frontend/` : client React + TypeScript + Vite
 
-```
+## Fonctionnalités principales
+
+- inscription, connexion et déconnexion
+- consultation du profil utilisateur
+- création, modification, suppression et consultation de dessins
+- participation à une session de dessin à tour de rôle
+- commentaires sur les dessins
+- likes et affichage de listes filtrées
+- recherche et navigation par auteur ou par thème
+
+## Structure du dépôt
+
+```text
 SimDraw/
-├── backend/          # API REST Express.js + TypeScript
+├── backend/
 │   ├── src/
-│   │   ├── config/       # Configuration (base de données, etc.)
-│   │   ├── controllers/  # Logique métier
-│   │   ├── middlewares/  # Middlewares (validation, auth, etc.)
-│   │   ├── models/       # Modèles Mongoose (User, Drawing, Comment)
-│   │   ├── routes/       # Routes API
-│   │   ├── types/        # Types TypeScript
-│   │   └── utils/        # Utilitaires
-│   └── tests/            # Tests unitaires (Vitest)
-└── frontend/         # Application cliente (à venir)
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── types/
+│   │   └── utils/
+│   └── tests/
+├── frontend/
+│   └── simdraw/
+│       ├── src/
+│       │   ├── components/
+│       │   ├── context/
+│       │   ├── helpers/
+│       │   ├── Page/
+│       │   └── types/
+│       └── public/
+└── Tuto/
 ```
 
-## 🛠️ Technologies
+## Stack technique
 
-### Backend
-- **Node.js** avec **Express.js 5**
-- **TypeScript** pour le typage statique
-- **MongoDB** avec **Mongoose** pour la base de données
-- **Vitest** pour les tests unitaires
-- **Nodemon** pour le développement
+### Installation backend
 
-## 📦 Installation
+- Node.js
+- Express 5
+- TypeScript
+- MongoDB avec Mongoose
+- express-session
+- Helmet, CORS, rate limiting
+- Vitest et Supertest
+
+### Installation frontend
+
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Testing Library et Vitest
+
+## Installation
 
 ### Prérequis
-- Node.js (v18+)
+
+- Node.js 18 ou plus
+- npm
 - MongoDB
 
-### Backend
+### Tests backend
 
 ```bash
 cd backend
 npm install
 ```
 
-## 🚀 Lancement
+### Tests frontend
 
-### Développement
+```bash
+cd frontend
+npm install
+```
+
+## Lancement en développement
+
+### Démarrer le backend
 
 ```bash
 cd backend
 npm run dev
 ```
 
-### Production
+### Démarrer le frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Le frontend utilise `VITE_API_URL` et pointe par défaut vers `http://localhost:8090`.
+
+## Tests
+
+### Backend
 
 ```bash
 cd backend
-npm run build
-npm start
+npm test
 ```
 
-## 🧪 Tests
+### Frontend
 
 ```bash
-cd backend
-npm test              # Exécuter les tests
-npm run test:watch    # Mode watch
-npm run test:coverage # Avec couverture de code
-npm run test:ui       # Interface graphique Vitest
+cd frontend
+npm test
 ```
 
-## 📊 Modèles de données
+## Documentation par application
 
-### User
-- `username` : Nom d'utilisateur unique (min 6 caractères)
-- `name` : Nom complet
-- `email` : Email unique
-- `password` : Mot de passe (min 8 caractères)
-- `drawings` : Liste des dessins de l'utilisateur
-- `admin` : Statut administrateur
-- `emoji` : Avatar emoji personnalisé
+- voir `backend/README.md` pour l'API, les routes et les scripts serveur
+- voir `frontend/README.md` pour le client React, les pages et les scripts frontend
 
-### Drawing
-- `title` : Titre du dessin
-- `theme` : Thème du dessin
-- `description` : Description optionnelle
-- `participants` : Liste des participants avec leurs créneaux
-- `maxParticipants` : Nombre maximum de participants
-- `path` : Données du dessin (points, couleurs, tailles)
-- `author` : Auteur du dessin
-- `likes` / `whoLiked` : Système de likes
-- `isDone` : Dessin terminé
-- `isPublic` : Visibilité publique
+## Statut
 
-### Comment
-- `comment` : Contenu du commentaire
-- `postId` : ID du dessin associé
-- `author` : Auteur du commentaire
+Le projet est en cours de développement. Le socle backend et le client principal sont présents, avec des tests backend et frontend déjà en place.
 
-## 📝 Scripts disponibles
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Lance le serveur en mode développement |
-| `npm run build` | Compile TypeScript vers JavaScript |
-| `npm start` | Lance le serveur compilé |
-| `npm run start:prod` | Build + start |
-| `npm test` | Exécute les tests |
-| `npm run test:coverage` | Tests avec couverture |
-
-## 📄 Licence
+## Licence
 
 ISC

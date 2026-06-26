@@ -1,4 +1,3 @@
-// filepath: /home/sim/Documents/SINF1BA/SIM/SIMEON/public/SimDraw/frontend/simdraw/src/context/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react'
 import type { IUser, IAuthContext } from '../types/user';

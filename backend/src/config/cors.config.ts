@@ -25,10 +25,13 @@ export const authenticatedCors = cors({
  
 export const corsOptions: CorsOptions = { 
     origin: (origin, callback) => { 
-        // Autoriser les requêtes sans origine (Postman, mobile apps) 
-        //if (!origin) { return callback(null, true); } 
+        // Autoriser les requêtes sans origine (Supertest, Postman, mobile apps).
+        if (!origin) {
+            callback(null, true);
+            return;
+        }
         
-        if (origin && allowedOrigins.includes(origin)) { 
+        if (allowedOrigins.includes(origin)) { 
             callback(null, true); 
         } else { 
             callback(new Error('Not allowed by CORS')); 
