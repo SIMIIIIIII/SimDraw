@@ -120,6 +120,11 @@ cd frontend
 npm test
 ```
 
+## Documentation API
+### Swagger UI (interactif)
+Lancer le backend puis ouvrir :
+http://localhost:8090/api-docs
+
 ## Documentation par application
 
 - voir `backend/README.md` pour l'API, les routes et les scripts serveur

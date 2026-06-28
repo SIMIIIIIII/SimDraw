@@ -168,3 +168,8 @@ Exemple :
 cd backend
 npm test
 ```
+
+## Documentation API
+### Swagger UI (interactif)
+Lancer le backend puis ouvrir :
+http://localhost:8090/api-docs

@@ -1,4 +1,4 @@
-# SimDraw Frontend
+# SimDraw Frontend - In progress
 
 Client React du projet SimDraw, construit avec Vite et TypeScript.
 
