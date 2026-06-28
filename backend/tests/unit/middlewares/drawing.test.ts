@@ -183,7 +183,9 @@ describe('Drawing middlewares', () => {
         it('Devrait echouer pour drawing inexistant', async () => {
             req = {params: {id: `${new Types.ObjectId}`}}
 
-            vi.mocked(Drawing.findById).mockResolvedValue(null);
+            vi.mocked(Drawing.findById).mockReturnValue({
+                lean: vi.fn().mockResolvedValue(null),
+            } as any);
 
             await validateDrawingId()(req, res, next);
 
@@ -195,7 +197,9 @@ describe('Drawing middlewares', () => {
         it('Devrait echouer pour drawing pas terminé', async () => {
             req = {params: {id: `${new Types.ObjectId}`}}
 
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: false});
+            vi.mocked(Drawing.findById).mockReturnValue({
+                lean: vi.fn().mockResolvedValue({isDone: false}),
+            } as any);
 
             await validateDrawingId()(req, res, next);
 
@@ -207,7 +211,9 @@ describe('Drawing middlewares', () => {
         it('Devrait echouer pour drawing pas public', async () => {
             req = {params: {id: `${new Types.ObjectId}`}}
 
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: true, isPublic: false});
+            vi.mocked(Drawing.findById).mockReturnValue({
+                lean: vi.fn().mockResolvedValue({isDone: true, isPublic: false}),
+            } as any);
 
             await validateDrawingId()(req, res, next);
 
@@ -219,7 +225,9 @@ describe('Drawing middlewares', () => {
         it('Devrait reuusir pour données valides', async () => {
             req = {params: {id: `${new Types.ObjectId}`}}
 
-            vi.mocked(Drawing.findById).mockResolvedValue({isDone: true, isPublic: true});
+            vi.mocked(Drawing.findById).mockReturnValue({
+                lean: vi.fn().mockResolvedValue({isDone: true, isPublic: true}),
+            } as any);
 
             await validateDrawingId()(req, res, next);
 

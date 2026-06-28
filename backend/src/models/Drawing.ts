@@ -1,5 +1,7 @@
 import mongoose, { Schema, Document, Types, Model } from 'mongoose'
 import { IDrawing, IDrawingMethods } from '../types/drawing'
+import { isDrawingAccessible } from '../utils/drawingHelpers';
+import redis from '../config/redis';
 
 
 const DrawingSchema = new Schema<IDrawingDocument, IDrawingModel> ({
@@ -226,6 +228,8 @@ DrawingSchema.statics.findPublicCompleted = function (options: FindPublicComplet
 
     return this.find(filter);
 };
+
+
 
 interface IDrawingModel extends Model<IDrawingDocument> {
     findPublicCompleted(options?: FindPublicCompletedOptions | null): Promise<IDrawingDocument[]>;

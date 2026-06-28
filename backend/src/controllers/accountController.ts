@@ -2,6 +2,7 @@ import { Response, Request} from "express";
 import User from "../models/User";
 import { sendSuccessWithData, sendError, sendSuccess } from "../middlewares/apiResponse";
 import { SessionData } from "../types/sessionTypes";
+import { SESSION_COOKIE_NAME } from "../config/session";
 
 export const connexion = async (
     req: Request,
@@ -57,7 +58,7 @@ export const logout = async (
             sendError(res, 'Erreur server', 500);
             return;
         }
-        res.clearCookie('connect.sid');
+        res.clearCookie(SESSION_COOKIE_NAME);
         sendSuccess(res, 'Vous êtes deconnecté', 200);
     });
 }

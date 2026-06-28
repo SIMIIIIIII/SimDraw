@@ -4,6 +4,7 @@ import Drawing from '../models/Drawing';
 import { formattedParticipants, hasCommented } from '../utils/helpers';
 import Comment from '../models/Comment';
 import { Req, SessionData } from '../types/sessionTypes';
+import redis from '../config/redis';
 
 
 export const createDrawing = async (
@@ -34,10 +35,15 @@ export const getDrawing = async (
     res : Response
 ) : Promise<void> => {
     try {
-        const drawing = await Drawing.findById(req.params.id);
-        await formattedParticipants(drawing!);
+        const drawing = (req as Req).drawing ?? await Drawing.findById(req.params.id);
+        if (!drawing) {
+            sendError(res, 'Drawing not found', 404);
+            return;
+        }
 
-        const comments = await Comment.find({postId : drawing?._id!});
+        await formattedParticipants(drawing as any);
+
+        const comments = await Comment.find({postId : drawing._id});
         if ((req as Req).isAuthenticated) hasCommented(comments, (req.session as SessionData).user?.id!);
 
         comments.sort((a, b) => {
@@ -46,7 +52,7 @@ export const getDrawing = async (
             return b.createdAt.getMilliseconds() - a.createdAt.getMilliseconds();
         });
 
-        sendSuccessWithData(res, drawing?.title!, 200, {drawing: drawing, comments: comments});
+        sendSuccessWithData(res, drawing.title, 200, {drawing: drawing, comments: comments});
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendError(res, message, 500);
@@ -68,6 +74,8 @@ export const likeDrawing = async (
         const delta = await drawing.toggleLike((req.session as SessionData).user?.id!);
         const message = delta === 1 ? 'Dessin liké' : 'Like enlevé';
 
+        await redis.del(`drawing:${req.params.id}`);
+
         sendSuccessWithData(res, message, 200, delta);
         
     } catch (error) {
@@ -82,6 +90,7 @@ export const deleteDrawing = async (
 ) : Promise<void> => {
     try {
         await Drawing.findByIdAndDelete(req.params.id);
+        await redis.del(`drawing:${req.params.id}`);
         sendSuccess(res, 'Dessin supprimé', 200);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
@@ -99,8 +108,11 @@ export const modifyDrawing = async (
             {
                 title: req.body.title,
                 description: req.body.description
-            }
+            },
+            { new: true }
         )
+
+        await redis.del(`drawing:${req.params.id}`);
         sendSuccessWithData(res, 'Les informations du dessin mises à jour', 200, drawing);
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';

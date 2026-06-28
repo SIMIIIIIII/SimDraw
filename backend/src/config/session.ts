@@ -1,10 +1,18 @@
 
 import { SessionOptions } from 'express-session';
 import { NODE_ENV, SESSION_SECRET } from './env';
+import { RedisStore } from 'connect-redis';
+import redis from './redis';
 
 const isProduction = NODE_ENV === 'production';
+export const SESSION_COOKIE_NAME = 'simdraw.sid';
 
 export const sessionConfig: SessionOptions = {
+    store: new RedisStore({
+        client: redis as any,
+        prefix: 'session:', // préfixe des clés Redis
+        ttl: 1800, // 30 minutes en secondes
+    }),
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -13,23 +21,7 @@ export const sessionConfig: SessionOptions = {
         httpOnly: true, 
         secure: isProduction,
         sameSite: isProduction ? ('none' as const) : ('lax' as const),
-        maxAge: 3600000
-    }
+        maxAge: 1800 * 1000
+    },
+    name: SESSION_COOKIE_NAME
 }
-
-/*
-{
-    secret: SESSION_SECRET!,
-    resave: false,
-    saveUninitialized: false,
-    store: NOV_ENV === 'test' 
-        ? undefined // Utilise MemoryStore pour les tests
-        : MongoStore.create({
-            mongoUrl: MONGODB_URI!,
-            ttl: 24 * 60 * 60 // 1 jour
-        }),
-    cookie: {
-        secure: NOV_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 1 jour
-    }
-};*/

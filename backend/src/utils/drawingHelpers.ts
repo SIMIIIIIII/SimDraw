@@ -1,5 +1,7 @@
 import { IDrawing } from "types/drawing";
 import { Types } from "mongoose";
+import { IDrawingDocument } from "../models/Drawing";
+import redis from '../config/redis';
 
 export const setCanModify = (
     drawings: IDrawing[],
@@ -19,4 +21,23 @@ export const sortByUpdatedAt = (
         }
         return b.likes - a.likes;
     });
+    
+}
+
+export const isDrawingAccessible = (drawing: IDrawingDocument): boolean => {
+    const participantCount = drawing.participants?.length || 0;
+    const maxParticipants = drawing.maxParticipants || 1;
+    const isDrawingCompleted = participantCount >= maxParticipants;
+
+    return (drawing.isPublic && Boolean(drawing.isDone)) || isDrawingCompleted;
+};
+
+export const searchInCache = async (cacheKey : string) => {
+    let cached: string | null = null;
+    try {
+        cached = await redis.get(cacheKey);
+    } catch {
+        cached = null;
+    }
+    return cached
 }
