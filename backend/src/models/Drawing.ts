@@ -1,7 +1,5 @@
 import mongoose, { Schema, Document, Types, Model } from 'mongoose'
 import { IDrawing, IDrawingMethods } from '../types/drawing'
-import { isDrawingAccessible } from '../utils/drawingHelpers';
-import redis from '../config/redis';
 
 
 const DrawingSchema = new Schema<IDrawingDocument, IDrawingModel> ({

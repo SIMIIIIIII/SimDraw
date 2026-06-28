@@ -6,7 +6,7 @@ import { Req, SessionData } from "../types/sessionTypes";
 import { z } from 'zod'
 import { getFirstZodError } from "../utils/validator";
 import redis from '../config/redis';
-import { searchInCache } from "@utils/drawingHelpers";
+import { searchInCache } from "../utils/drawingHelpers";
 
 const isDrawingAccessible = (drawing: {
     participants?: unknown[];

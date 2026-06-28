@@ -42,7 +42,6 @@ SimDraw/
 │       │   ├── Page/
 │       │   └── types/
 │       └── public/
-└── Tuto/
 ```
 
 ## Stack technique

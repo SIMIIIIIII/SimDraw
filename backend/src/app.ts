@@ -11,6 +11,9 @@ import Comment from './routes/commentRoutes'
 import Drawing from './routes/drawingRoutes';
 import Draw from './routes/drawRoutes'
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
  
 const app: Application = express();
 
@@ -22,6 +25,19 @@ app.use(cors(corsOptions));
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 app.use(session(sessionConfig));
+
+// le fichier YAML
+const swaggerDocument = YAML.load(
+  path.join(__dirname, '../openapi.yaml')
+);
+
+// Monte l'UI sur /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+  customSiteTitle: 'SimDraw API Docs',
+  swaggerOptions: {
+    persistAuthorization: true,
+  },
+}));
 
 // Routes
 app.use('/', HomeRoutes);
